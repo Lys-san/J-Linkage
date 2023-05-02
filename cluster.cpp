@@ -120,6 +120,23 @@ std::vector<std::vector<bool>> computePM(const std::set<Cluster> &clusters, cons
     std::cout << pm.size() << std::endl;
     return pm;
 }
+std::vector<std::set<Cluster>> extractPSfromPM(const std::set<Cluster> &clusters, const std::vector<std::vector<bool>> &pm) {
+    std::vector<Cluster> clustersVect(clusters.begin(), clusters.end());
+    std::vector<std::set<Cluster>> preferenceSets;
+    int index;
+    for(auto psLine : pm) {
+        // constructing each ps
+        std::set<Cluster> ps;
+        for(auto b : psLine) {
+            if(b) {
+                ps.emplace(clustersVect.at(index));
+            }
+            index++;
+        }
+        preferenceSets.emplace_back(ps);
+    }
+    return preferenceSets;
+}
 
 std::vector<std::vector<bool>> transposatePM(const std::vector<std::vector<bool>> &pm) {
     std::vector<std::vector<bool>> transposate(pm.begin()->size(), std::vector<bool>(pm.size(), false));
@@ -131,3 +148,47 @@ std::vector<std::vector<bool>> transposatePM(const std::vector<std::vector<bool>
     return transposate;
 }
 
+
+
+double jaccard(std::set<Cluster> a, std::set<Cluster> b) {
+    std::set<Cluster> u; // union
+    std::set_union(a.begin(), a.end(), b.begin(), b.end(), std::back_inserter(u));
+
+    std::set<Cluster> n; // intersection
+    std::set_intersection(a.begin(), a.end(), b.begin(), b.end(), std::back_inserter(n));
+
+    return (u.size() - n.size())/static_cast<double>(u.size());
+
+}
+
+void link(std::set<Cluster> &clusters, std::set<Point> &dataSet) {
+    std::vector<Cluster> clustersVect(clusters.begin(), clusters.end());
+
+    auto pm = computePM(clusters, dataSet);
+    auto preferenceSets = extractPSfromPM(clusters, pm);
+
+    std::pair<Cluster, Cluster> closest;
+
+    int i = 0;
+    int j = 0;
+
+    // find closest clusters according to jaccard distance
+    for(auto ps1 : preferenceSets) {
+        for(auto ps2 : preferenceSets) {
+            if(jaccard(ps1, ps2) < 1.) {
+                closest = std::make_pair(clustersVect.at(i), clustersVect.at(j));
+            }
+            j++;
+        }
+        i++;
+    }
+
+    // merge clusters
+    std::set_union(closest.first.points().begin(),
+                   closest.first.points().begin(),
+                   closest.second.points().begin(),
+                   closest.second.points().end(),
+                   closest.first.points());
+
+
+}

@@ -46,7 +46,6 @@ int main() {
     //line.display();
 
 
-
     for(int i = 0; i < 60; i++) {
         Point pp = line.randomPoint();
         pp.addNoise();
@@ -61,7 +60,6 @@ int main() {
 
     // cluster generation
     auto clusters = Cluster::sampleDataSet(dataSet);
-    std::vector<double> lengths;
 
     Imagine::Color cols[] = COLOR_PACK;
     int i = 0;
@@ -83,29 +81,15 @@ int main() {
             }
             Line line = Line(p[0], p[1]);
             std::cout << "[DEBUG] line length is " << line.squaredLength() << std::endl;
-            lengths.emplace_back(line.squaredLength());
             line.display(col);
         }
     }
 
     double avg = 0.;
 
-    for(auto length : lengths) {
-        avg += length;
-    }
-    avg /= lengths.size();
-    std::cout << "[DEBUG] avg line length is " << avg << std::endl;
-
-    auto pm = computePM(clusters, dataSet);
-
-    std::cout << "[DEBUG] transposated preference matrix " << std::endl;
-
-    for(auto cs : pm) {
-        for(auto b : cs) {
-            std::cout << b << " ";
-        }
-        std::cout << std::endl;
-    }
+    std::cout << "[DEBUG] before clusters : " << clusters.size() << std::endl;
+    link(clusters, dataSet);
+    std::cout << "[DEBUG] after clusters : " << clusters.size() << std::endl;
 
 
 

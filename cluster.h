@@ -63,10 +63,6 @@ public:
     Point extractPointModel();
 
 
-
-
-
-
 private:
 
     std::set<Point> _points;                   // set of points composing the cluster
@@ -81,5 +77,13 @@ std::vector<std::vector<bool>> computePM(const std::set<Cluster> &clusters, cons
 
 /** Returns the transposate of the given pm. */
 std::vector<std::vector<bool>> transposatePM(const std::vector<std::vector<bool>> &pm);
+
+std::vector<std::set<Cluster>> extractPSfromPM(const std::set<Cluster> &clusters, const std::vector<std::vector<bool>> &pm);
+
+/** Returns the Jaccard distance (between 0 and 1) from 2 vectors a and b. */
+double jaccard(std::set<Cluster> a, std::set<Cluster> b);
+
+/** Performs linking action and updates given parameters. */
+void link(std::set<Cluster> &clusters, std::set<Point> &dataSet);
 
 #endif // CLUSTER_H
