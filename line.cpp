@@ -40,12 +40,14 @@ Point Line::randomPoint() {
     if(_a == INFTY) {
         return Point::randomlyGeneratedOnXvalue(_p1.x());
     }
+
     double x = Point::randomCoordinate();
     double min = -_b/_a;
 
     // to guaranty that the selectionned point is in [0, 1]²
-    if(x < min) {
-        x += min;
+    // code better later
+    while(_a*x + _b < 0 || _a*x + _b > 1) {
+        x = Point::randomCoordinate();
     }
     return Point(x, _a*x + _b);
 }
@@ -72,12 +74,25 @@ int Line::mmss() {
     return 2;
 }
 
-std::vector<Point> Line::computeConsensusSet(const std::set<Point> &dataSet) {
-    std::vector<Point> cs;
+std::set<Point> Line::computeConsensusSet(const std::set<Point> &dataSet) {
+    std::set<Point> cs;
     for(Point point : dataSet) {
         if(distance(*this, point) <= EPSILON) {
             point.accept();
-            cs.emplace_back(point);
+            cs.emplace(point);
+        }
+    }
+    return cs;
+}
+
+std::vector<bool> Line::computeBooleanConsensusSet(const std::set<Point> &dataSet) {
+    std::vector<bool> cs;
+    for(Point point : dataSet) {
+        if(distance(*this, point) <= EPSILON) {
+            cs.emplace_back(true);
+        }
+        else {
+            cs.emplace_back(false);
         }
     }
     return cs;

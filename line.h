@@ -64,7 +64,11 @@ public:
     int mmss();
 
     /** Computes and return the consensus set of the model according to the given dataSet*/
-    std::vector<Point> computeConsensusSet(const std::set<Point> &dataSet);
+    std::set<Point> computeConsensusSet(const std::set<Point> &dataSet);
+
+    /** Computes and returns the consensus set (vector of booleans) according to the
+     *  given data set. */
+    std::vector<bool> computeBooleanConsensusSet(const std::set<Point> &dataSet);
 
 
 private:

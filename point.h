@@ -114,7 +114,7 @@ public:
      */
     std::discrete_distribution<> computeProbabilitiesFor(const std::set<Point> &points);
 
-
+    std::vector<bool> computeBooleanConsensusSet(const std::set<Point> &dateSet);
 
 
 private:

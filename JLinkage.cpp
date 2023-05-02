@@ -32,21 +32,29 @@ int main() {
     }
 
     // model with noise
-    Point p = Point::randomlyGenerated();
+    Point p = Point::randomlyGeneratedOnYvalue(0.);
+    std::cout << "[DEBUG] p = " << p << std::endl;
     dataSet.emplace(p);
 
-    Point q = Point::randomlyGenerated();
+    Point q = Point::randomlyGeneratedOnYvalue(1.);
+    std::cout << "[DEBUG] q = " << q << std::endl;
+
     dataSet.emplace(q);
 
     Line line = Line(p, q);
+
+    //line.display();
+
 
 
     for(int i = 0; i < 60; i++) {
         Point pp = line.randomPoint();
         pp.addNoise();
+        std::cout << pp << std::endl;
         pp.display();
         dataSet.emplace(pp);
     }
+    std::cout << "[DEBUG] data set of size = " << dataSet.size() << std::endl;
 
 
     Imagine::milliSleep(1000);
@@ -62,6 +70,9 @@ int main() {
 
         i++;
         auto col = cols[i % N_COLORS];
+        for(auto point : cluster.points()) {
+            point.display(col);
+        }
 
         // for debug, remove after (or maybe not...?)
         if(cluster.size() == 2) {

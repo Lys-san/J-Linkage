@@ -121,6 +121,15 @@ std::discrete_distribution<> Point::computeProbabilitiesFor(const std::set<Point
     return probabilities;
 }
 
+std::vector<bool> Point::computeBooleanConsensusSet(const std::set<Point> &dateSet) {
+    std::vector<bool> cs;
+    for(auto point : dateSet) {
+
+        cs.emplace_back(*this == point ? true : false);
+
+    }
+    return cs;
+}
 
 /////////////////////////////////////////////////////////////////////////////
 

@@ -86,6 +86,10 @@ Line Cluster::extractLineModel() {
     return Line(p[0], p[1]);
 }
 
+Point Cluster::extractPointModel() {
+    return *points().begin();
+}
+
 bool Cluster::operator<(const Cluster &other) const {
     //return this->_points.size() < other._points.size();
     return this->_points < other._points;
@@ -97,10 +101,19 @@ bool Cluster::operator==(const Cluster &other) const {
 
 
 std::vector<std::vector<bool>> computePM(const std::set<Cluster> &clusters, const std::set<Point> dataSet) {
-    std::vector<std::vector<bool>> pm; // preference matrix
+    //std::vector<std::vector<bool>> pm; // preference matrix
+    std::vector<std::vector<bool>> pm(0, std::vector<bool>(0, false));
+
     for(auto cluster : clusters) {
-        auto model = cluster.extractLineModel();
-        pm.emplace_back(model.computeConsensusSet(dataSet));
+        if(cluster.size() == 2) {
+            auto model = cluster.extractLineModel();
+            pm.emplace_back(model.computeBooleanConsensusSet(dataSet));
+        }
+        else {
+            auto model = cluster.extractPointModel();
+            pm.emplace_back(model.computeBooleanConsensusSet(dataSet));
+        }
+
     }
     // TODO : transposate the actual pm
     return pm;

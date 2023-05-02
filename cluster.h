@@ -60,6 +60,8 @@ public:
     // TODO : redo this funcion for generic ModelType model insead of Line
     Line extractLineModel();
 
+    Point extractPointModel();
+
 
 
 
