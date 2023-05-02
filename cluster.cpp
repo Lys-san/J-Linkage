@@ -99,6 +99,7 @@ bool Cluster::operator==(const Cluster &other) const {
     return this->points() == other.points();
 }
 
+////////////////////////////////////////////////////////////////////////////////////
 
 std::vector<std::vector<bool>> computePM(const std::set<Cluster> &clusters, const std::set<Point> dataSet) {
     //std::vector<std::vector<bool>> pm; // preference matrix
@@ -115,6 +116,18 @@ std::vector<std::vector<bool>> computePM(const std::set<Cluster> &clusters, cons
         }
 
     }
-    // TODO : transposate the actual pm
+    pm = transposatePM(pm);
+    std::cout << pm.size() << std::endl;
     return pm;
 }
+
+std::vector<std::vector<bool>> transposatePM(const std::vector<std::vector<bool>> &pm) {
+    std::vector<std::vector<bool>> transposate(pm.begin()->size(), std::vector<bool>(pm.size(), false));
+
+    for(int i = 0; i < pm.size(); i++) {
+        for(int j = 0; j < pm.begin()->size(); j++)
+        transposate.at(j).at(i) = pm.at(i).at(j);
+    }
+    return transposate;
+}
+

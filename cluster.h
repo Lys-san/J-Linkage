@@ -65,6 +65,8 @@ public:
 
 
 
+
+
 private:
 
     std::set<Point> _points;                   // set of points composing the cluster
@@ -76,5 +78,8 @@ private:
 
 /** Generates preference matrix from cluster */
 std::vector<std::vector<bool>> computePM(const std::set<Cluster> &clusters, const std::set<Point> dataSet);
+
+/** Returns the transposate of the given pm. */
+std::vector<std::vector<bool>> transposatePM(const std::vector<std::vector<bool>> &pm);
 
 #endif // CLUSTER_H
