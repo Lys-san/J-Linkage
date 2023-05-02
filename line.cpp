@@ -58,6 +58,12 @@ void Line::display() {
     Imagine::drawLine(tmp1.x(), tmp1.y(), tmp2.x(), tmp2.y(), LINE_COLOR);
 }
 
+void Line::display(Imagine::Color color) {
+    Point tmp1 = _p1.scale(WINDOW_WIDTH, WINDOW_HEIGHT);
+    Point tmp2 = _p2.scale(WINDOW_WIDTH, WINDOW_HEIGHT);
+    Imagine::drawLine(tmp1.x(), tmp1.y(), tmp2.x(), tmp2.y(), color);
+}
+
 int Line::mmss() {
     return 2;
 }

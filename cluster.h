@@ -30,6 +30,9 @@ public:
     /** Factory method that generates M clusters from the given data set. */
     static std::set<Cluster> sampleDataSet(const std::set<Point> &points);
 
+    /** Stream operator << redefinition. */
+    friend std::ostream &operator<<(std::ostream &out, Cluster &cluster);
+
     /**
      * < operator redefinition for Cluster objects.
      *

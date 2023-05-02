@@ -25,7 +25,7 @@ int main() {
     std::set<Point> dataSet;
 
     // testing point generation
-    for(int i = 0; i < 30; i++) {
+    for(int i = 0; i < 40; i++) {
         Point p = Point::randomlyGenerated();
         p.display();
         dataSet.emplace(p);
@@ -45,7 +45,7 @@ int main() {
 
     //line.display();
 
-    for(int i = 0; i < 30; i++) {
+    for(int i = 0; i < 60; i++) {
         Point pp = line.randomPoint();
         pp.addNoise();
         std::cout << pp << std::endl;
@@ -57,18 +57,23 @@ int main() {
     Imagine::milliSleep(3000);
 
     auto clusters = Cluster::sampleDataSet(dataSet);
-    std::cout << "[DEBUG] Clusters size : " << clusters.size() << std::endl;
     Imagine::Color cols[] = COLOR_PACK;
     int i = 0;
 
     for(auto cluster:clusters) {
-        std::cout << "[DEBUG]  ----------- " << std::endl;
 
         i++;
         auto col = cols[i % N_COLORS];
-        std::cout << "[DEBUG] Color : " << i % clusters.size() << " : " << col << std::endl;
-        for(auto point : cluster.points()) {
-            point.display(col);
+
+        // for debug, remove after (or maybe not...?)
+        if(cluster.size() == 2) {
+            Point p[2];
+            int i = 0;
+            for(auto point : cluster.points()) {
+                p[i++] = point;
+            }
+            Line line = Line(p[0], p[1]);
+            line.display(col);
         }
     }
 

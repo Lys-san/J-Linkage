@@ -53,6 +53,9 @@ public:
     /** Screen display of a line. */
     void display();
 
+    /** Screen display of a line with a certain color. */
+    void display(Imagine::Color color);
+
     /** Returns the Minimal Sample Set Size of the model.
      *  For a Line object, this constant is set to 2. */
     int mmss();

@@ -28,8 +28,6 @@ std::set<Cluster> Cluster::sampleDataSet(const std::set<Point> &points) {
         auto it = dataSet.begin();
         std::advance(it, i);
         Point p = *it;
-        std::cout<< "[DEBUG] Extacting point " << p << std::endl;
-//        std::cout<< "[DEBUG] Data set has now size " << dataSet.size() << std::endl;
         clusterPoints.emplace(p);
         dataSet.erase(it);
 
@@ -43,46 +41,28 @@ std::set<Cluster> Cluster::sampleDataSet(const std::set<Point> &points) {
 
 
             int point_index = d(gen);
-            std::cout<< "[DEBUG] Random : " << point_index << std::endl;
 
             it = dataSet.begin();
             std::advance(it, point_index);
             p = *it;
             clusterPoints.emplace(p);
+            dataSet.erase(it);
         }
 
-        std::cout << "[DEBUG]  ----------- created cluser : " << std::endl;
-        for(auto point: clusterPoints) {
-            std::cout<< "[DEBUG] Point : " << point << std::endl;
-        }
-        std::cout << "[DEBUG]  ----------- " << std::endl;
 
         auto cluster = Cluster(clusterPoints);
-        auto res = clusters.emplace(cluster);
+        clusters.emplace(cluster);
 
-        std::cout << "[DEBUG] " << (clusters.find(cluster) != clusters.end()) << std::endl;
-        std::cout << "[DEBUG] EMPLACE RETURN VAL =  " << res.second << std::endl;
-
-        std::cout << "[DEBUG]  ----------- Is similar to : " << std::endl;
-        for(auto point: clusters.find(cluster)->points()) {
-            std::cout<< "[DEBUG] Point : " << point << std::endl;
-        }
-        std::cout << "[DEBUG]  ----------- " << std::endl;
-
-        for(auto c:clusters) {
-            if(c == cluster) {
-                std::cout << "AAAAAAAAAAAAAAAAAAAAAAAAAAAAA" << std::endl;
-
-            }
-        }
-
-        std::cout << "[DEBUG] Emplacing cluster of size " << cluster.size() << std::endl;
-        std::cout << "[DEBUG] Cluster set now contains " << clusters.size() << " clusters." << std::endl;
 
     }
     std::cout<< "[DEBUG] End of random sampling. Generated cluster is size  "
              << clusters.size()  << " for total data of size  : " << points.size() << std::endl;
     return clusters;
+}
+
+std::ostream &operator<<(std::ostream &out, Cluster &cluster) {
+    // TODO
+    return out;
 }
 
 std::set<Point> Cluster::points() const {

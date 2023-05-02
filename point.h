@@ -30,6 +30,9 @@
 class Point
 {
 public:
+    /** Default constructor */
+    Point();
+
     /** Constructor */
     Point(double x, double y);
 
