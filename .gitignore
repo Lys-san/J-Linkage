@@ -1,4 +1,5 @@
+.gitignore
 Makefile
 .cmake/
 .git/
-CmakeLists.txt.user
+CMakeLists.txt.user
