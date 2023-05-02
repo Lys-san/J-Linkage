@@ -11,6 +11,7 @@
 
 #include "point.h"
 #include "model.h"
+#include "line.h" // this will be deleted in final version of the code
 
 
 /** Represents a cluster of points, which can eventually be view as a model hypothesis.
@@ -56,8 +57,10 @@ public:
      *  that it contains. */
     int size();
 
-    /** Generate preference matrix from cluster */
-   // ModelType generatePM();
+    // TODO : redo this funcion for generic ModelType model insead of Line
+    Line extractLineModel();
+
+
 
 
 private:
@@ -68,5 +71,8 @@ private:
                                                // of points composing the cluster)
     bool _preferenceSet[MAX_POINTS_ON_SCREEN]; // preference set of the cluster
 };
+
+/** Generates preference matrix from cluster */
+std::vector<std::vector<bool>> computePM(const std::set<Cluster> &clusters, const std::set<Point> dataSet);
 
 #endif // CLUSTER_H

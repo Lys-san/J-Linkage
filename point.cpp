@@ -137,5 +137,5 @@ double Point::generateNoiseValue() {
 /////////////////////////////////////////////////////////////////////////////
 
 double squaredDistance(Point p1, Point p2) {
-    return std::pow(p1.x() - p2.x(), 2) - std::pow(p1.y() - p2.y(), 2);
+    return std::pow(p1.x() - p2.x(), 2) + std::pow(p1.y() - p2.y(), 2);
 }

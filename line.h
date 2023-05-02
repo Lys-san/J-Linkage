@@ -46,6 +46,9 @@ public:
     /** Accessor for private field _p2. */
     Point p2() const;
 
+    /** Returns the squared distanc seperating the Line's 2 points. */
+    double squaredLength();
+
     /** Returns a randomly selected point from the current line.
      * Guaranties that the returned point is in [0, 1]x[0, 1]. */
     Point randomPoint();
@@ -61,7 +64,7 @@ public:
     int mmss();
 
     /** Computes and return the consensus set of the model according to the given dataSet*/
-    std::set<Point> computeConsensusSet(const std::set<Point> &dataSet);
+    std::vector<Point> computeConsensusSet(const std::set<Point> &dataSet);
 
 
 private:
@@ -75,5 +78,16 @@ private:
 
 /** Returns the (shortest) distance from a given point to a given line. */
 double distance(Line line, Point point);
+
+
+/**
+ * Compute the preference set of the point, which stores either the point matches with each model
+ * or not.
+ *
+ * @param modelSet a set of models
+ * @return a vector of boolean. The i-th element of the vector corresponds to the i-th element
+ * of the entry set.
+ */
+std::vector<bool> computePreferenceSetFor(const Point &point, const std::set<Line> &modelSet);
 
 #endif // LINE_H

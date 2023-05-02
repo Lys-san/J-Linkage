@@ -105,15 +105,6 @@ public:
     /** Disturb the coordinate of the point. */
     void addNoise();
 
-//    /** Computes and return a map associating each point from the given set to its
-//     *  probability of being drawn after the current point.
-//     *
-//     * @param points the set of points to compute probability for
-//     * @return a map associating each point from the given set to its probability of
-//     * being draw after th current point.
-//     */
-//    std::map<Point, double> computeProbabilitiesFor(const std::set<Point> &points);
-
     /** Computes and return a map associating each point from the given set to its
      *  probability of being drawn after the current point.
      *
@@ -122,6 +113,8 @@ public:
      * being draw after th current point.
      */
     std::discrete_distribution<> computeProbabilitiesFor(const std::set<Point> &points);
+
+
 
 
 private:

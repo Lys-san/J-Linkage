@@ -8,7 +8,7 @@ Implementation of the J-Linkage algorithm for multiple model estimation, based o
 
 This program is coded using C++, its compilation requires :
 - the cmake utilities (>= v3.4)
-- the Imagine++ library (download at [](http://imagine.enpc.fr/~monasse/Imagine++/))
+- the Imagine++ library (download at [http://imagine.enpc.fr/~monasse/Imagine++/](http://imagine.enpc.fr/~monasse/Imagine++/))
 
 Build Makefile with `cmake CMakeLists.txt`, and then the executable with `make`. 
 

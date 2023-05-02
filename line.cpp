@@ -32,6 +32,10 @@ Point Line::p2() const {
     return _p2;
 }
 
+double Line::squaredLength() {
+    return squaredDistance(_p1, _p2);
+}
+
 Point Line::randomPoint() {
     if(_a == INFTY) {
         return Point::randomlyGeneratedOnXvalue(_p1.x());
@@ -68,12 +72,12 @@ int Line::mmss() {
     return 2;
 }
 
-std::set<Point> Line::computeConsensusSet(const std::set<Point> &dataSet) {
-    std::set<Point> cs;
+std::vector<Point> Line::computeConsensusSet(const std::set<Point> &dataSet) {
+    std::vector<Point> cs;
     for(Point point : dataSet) {
         if(distance(*this, point) <= EPSILON) {
             point.accept();
-            cs.emplace(point);
+            cs.emplace_back(point);
         }
     }
     return cs;
@@ -89,4 +93,10 @@ double distance(Line line, Point point) {
     double num = std::abs(a*x -y + b);
     double den = std::sqrt(a*a + 1);
     return num/den;
+}
+
+std::vector<bool> computePreferenceSetFor(const Point &point, const std::set<Line> &modelSet) {
+    std::vector<bool> ps;
+    // TODO
+    return ps;
 }

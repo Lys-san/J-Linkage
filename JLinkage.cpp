@@ -24,39 +24,37 @@ int main() {
 
     std::set<Point> dataSet;
 
-    // testing point generation
+    // random point generation
     for(int i = 0; i < 40; i++) {
         Point p = Point::randomlyGenerated();
         p.display();
         dataSet.emplace(p);
-        std::cout << p << std::endl;
     }
 
+    // model with noise
     Point p = Point::randomlyGenerated();
-    std::cout << p << std::endl;
     dataSet.emplace(p);
 
-    Point q = Point(1, 1);
-    std::cout << q << std::endl;
+    Point q = Point::randomlyGenerated();
     dataSet.emplace(q);
 
     Line line = Line(p, q);
-    std::cout << line << std::endl;
 
-    //line.display();
 
     for(int i = 0; i < 60; i++) {
         Point pp = line.randomPoint();
         pp.addNoise();
-        std::cout << pp << std::endl;
         pp.display();
         dataSet.emplace(pp);
     }
 
 
-    Imagine::milliSleep(3000);
+    Imagine::milliSleep(1000);
 
+    // cluster generation
     auto clusters = Cluster::sampleDataSet(dataSet);
+    std::vector<double> lengths;
+
     Imagine::Color cols[] = COLOR_PACK;
     int i = 0;
 
@@ -73,14 +71,30 @@ int main() {
                 p[i++] = point;
             }
             Line line = Line(p[0], p[1]);
+            std::cout << "[DEBUG] line length is " << line.squaredLength() << std::endl;
+            lengths.emplace_back(line.squaredLength());
             line.display(col);
         }
     }
 
-//    auto cs = line.computeConsensusSet(dataSet);
-//    for(auto point : cs) {
-//        point.display();
-//    }
+    double avg = 0.;
+
+    for(auto length : lengths) {
+        avg += length;
+    }
+    avg /= lengths.size();
+    std::cout << "[DEBUG] avg line length is " << avg << std::endl;
+
+    auto pm = computePM(clusters, dataSet);
+
+    std::cout << "[DEBUG] transposated preference matrix " << std::endl;
+
+    for(auto cs : pm) {
+        for(auto b : cs) {
+            std::cout << b << " ";
+        }
+        std::cout << std::endl;
+    }
 
 
 
