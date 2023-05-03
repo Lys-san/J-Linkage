@@ -53,6 +53,14 @@ public:
      */
     bool operator==(const Point &other) const;
 
+    /**
+     * != operator redefinition for Point objects.
+     *
+     * @param other the comparing point
+     * @return true if the points have different coordinate and false otherwise.
+     */
+    bool operator!=(const Point &other) const;
+
     /** Accessor for private _x field. */
     double x() const;
 

@@ -102,7 +102,7 @@ bool Cluster::operator==(const Cluster &other) const {
     return this->points() == other.points();
 }
 
-std::set<Cluster> computePS(const std::vector<std::set<Cluster>> preferenceSets) {
+std::vector<Cluster> computePS(const std::vector<std::vector<Cluster>> preferenceSets) {
     auto ps = *preferenceSets.begin();
     for(auto clusterSet : preferenceSets) {
         std::set_union(clusterSet.begin(), clusterSet.end(), ps.begin(), ps.end(), std::back_inserter(ps));
@@ -141,7 +141,6 @@ std::vector<std::set<Cluster>> extractPSfromPM(const std::set<Cluster> &clusters
         // constructing each ps
         std::set<Cluster> ps;
         for(auto b : psLine) {
-            std::cout << "o" << std::endl;
 
             if(b) {
                 ps.emplace(clustersVect.at(index));
@@ -149,8 +148,6 @@ std::vector<std::set<Cluster>> extractPSfromPM(const std::set<Cluster> &clusters
             index++;
         }
         preferenceSets.emplace_back(ps);
-        std::cout << "EMPLACING" << std::endl;
-
     }
     return preferenceSets;
 }
@@ -167,18 +164,12 @@ std::vector<std::vector<bool>> transposatePM(const std::vector<std::vector<bool>
 
 
 
-double jaccard(std::set<Cluster> a, std::set<Cluster> b) {
-    // convert into vector
-    std::vector<Cluster> aVect(a.begin(), a.end());
-    std::vector<Cluster> bVect(b.begin(), b.end());
-
-
+double jaccard(std::vector<Cluster> a, std::vector<Cluster> b) {
     std::vector<Cluster> u; // union
-    std::set_union(aVect.begin(), aVect.end(), bVect.begin(), bVect.end(), std::back_inserter(u));
+    std::set_union(a.begin(), a.end(), b.begin(), b.end(), std::back_inserter(u));
 
     std::vector<Cluster> n; // intersection
-    std::set_intersection(aVect.begin(), aVect.end(), bVect.begin(), bVect.end(), std::back_inserter(n));
-//    return 0.;
+    std::set_intersection(a.begin(), a.end(), b.begin(), b.end(), std::back_inserter(n));
     return (u.size() - n.size())/static_cast<double>(u.size());
 
 }
@@ -190,39 +181,66 @@ void link(std::set<Cluster> &clusters, std::set<Point> &dataSet) {
     auto pm = computePM(clusters, dataSet);
     auto preferenceSets = extractPSfromPM(clusters, pm); // vector of sets
 
-    std::cout << "[AAAAAAAAAA] " << preferenceSets.begin()->size() << std::endl;
-
-    std::cout << "[AAAAAAAAAA] " << clustersVect.size() << std::endl;
-
-
-
-
     std::pair<Cluster, Cluster> closest;
-
-    int i = 0;
-    int j = 0;
-    int k = 0;
 
     // find closest clusters according to jaccard distance
     for(auto c1 : clustersVect) {
+        // TODO (?) : put the following code (cluster PS computing) in a function
         // compute c1's PS
-        std::vector<std::set<Cluster>> c1PointsPs;
+        std::vector<std::vector<Cluster>> c1PointsPs;
         for(auto point : c1.points()) {
+            // we assume that the point is contained in the dataSet...
+            int pointIndex = std::distance(dataSet.begin(), dataSet.find(point));
+            std::vector<Cluster> tmp(preferenceSets.at(pointIndex).begin(), preferenceSets.at(pointIndex).end());
+            c1PointsPs.emplace_back(tmp);
+        }
+        // do the intersection
+        std::vector<Cluster> ps1 = c1PointsPs.at(0); // asume that we have at least 1 point
+        for(std::vector<Cluster> ps : c1PointsPs) {
+            std::set_intersection(
+                        ps.begin(),
+                        ps.end(),
+                        ps1.begin(),
+                        ps1.end(),
+                        std::back_inserter(ps1)
+                        );
+        }
 
-            k++;
-        }
+
+        // for each other buffer
         for(auto c2 : clustersVect) {
-            j++;
+            // compute c2's PS
+            std::vector<std::vector<Cluster>> c2PointsPs;
+            for(auto point : c2.points()) {
+                // we assume that the point is contained in the dataSet...
+                int pointIndex = std::distance(dataSet.begin(), dataSet.find(point));
+                std::vector<Cluster> tmp(preferenceSets.at(pointIndex).begin(), preferenceSets.at(pointIndex).end());
+                c2PointsPs.emplace_back(tmp);
+            }
+            // do the intersection
+            std::vector<Cluster> ps2 = c2PointsPs.at(0); // asume that we have at least 1 point
+            for(auto ps : c2PointsPs) {
+                std::set_intersection(
+                            ps.begin(),
+                            ps.end(),
+                            ps1.begin(),
+                            ps1.end(),
+                            std::back_inserter(ps2)
+                            );
+            }
+            // compare
+            if(jaccard(ps1, ps2) < 1.) {
+                closest = std::make_pair(c1, c2);
+            }
         }
-        i++;
     }
 
     // merge clusters
-//    std::set_union(closest.first.points().begin(),
-//                   closest.first.points().begin(),
-//                   closest.second.points().begin(),
-//                   closest.second.points().end(),
-//                   closest.first.points());
 
+    for(auto point : closest.second.points()) {
+        closest.first.points().emplace_back(point);
+    }
+
+    clusters.erase(clusters.find(closest.second));
 
 }

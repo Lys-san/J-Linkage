@@ -64,8 +64,7 @@ public:
 
     /** Computes and returns the intersection of the PS of all the points
      *  contained in the cluster. */
-    std::set<Cluster> computePS();
-
+    std::vector<Cluster> computePS(const std::vector<std::vector<Cluster>> preferenceSets);
 
 private:
 
@@ -76,6 +75,8 @@ private:
     bool _preferenceSet[MAX_POINTS_ON_SCREEN]; // preference set of the cluster
 };
 
+std::map<Point, int> generatePointIndexes();
+
 /** Generates preference matrix from cluster */
 std::vector<std::vector<bool>> computePM(const std::set<Cluster> &clusters, const std::set<Point> dataSet);
 
@@ -85,7 +86,7 @@ std::vector<std::vector<bool>> transposatePM(const std::vector<std::vector<bool>
 std::vector<std::set<Cluster>> extractPSfromPM(const std::set<Cluster> &clusters, const std::vector<std::vector<bool>> &pm);
 
 /** Returns the Jaccard distance (between 0 and 1) from 2 vectors a and b. */
-double jaccard(std::set<Cluster> a, std::set<Cluster> b);
+double jaccard(std::vector<Cluster> a, std::vector<Cluster> b);
 
 /** Performs linking action and updates given parameters. */
 void link(std::set<Cluster> &clusters, std::set<Point> &dataSet);
