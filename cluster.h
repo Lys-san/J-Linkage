@@ -51,7 +51,7 @@ public:
     bool operator==(const Cluster &other) const;
 
     /** Accessor for private _points field. */
-    std::set<Point> points() const;
+    std::vector<Point> points() const;
 
     /** Returns the size of the cluster, i.e. the number of elements
      *  that it contains. */
@@ -62,10 +62,14 @@ public:
 
     Point extractPointModel();
 
+    /** Computes and returns the intersection of the PS of all the points
+     *  contained in the cluster. */
+    std::set<Cluster> computePS();
+
 
 private:
 
-    std::set<Point> _points;                   // set of points composing the cluster
+    std::vector<Point> _points;                // vector of points composing the cluster
     std::set<Point> _consensusSet;             // set of points that matches with the model
                                                // (aren't necessarely inside the set
                                                // of points composing the cluster)
