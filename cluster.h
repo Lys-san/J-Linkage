@@ -1,7 +1,7 @@
 /**
  * Author        : Lysandre M. (lysandre.macke@enpc.fr)
  * Created       : 04-27-2023
- * Last modified : 04-28-2023 */
+ * Last modified : 05-03-2023 */
 
 #ifndef CLUSTER_H
 #define CLUSTER_H
@@ -21,6 +21,8 @@ public:
     /** Constructors */
     Cluster();
 
+    Cluster(const Cluster& other);
+
     Cluster(Point p);
 
     Cluster(const std::set<Point> &points);
@@ -29,7 +31,7 @@ public:
     ~Cluster();
 
     /** Factory method that generates M clusters from the given data set. */
-    static std::set<Cluster> sampleDataSet(const std::set<Point> &points);
+    static std::vector<Cluster> sampleDataSet(const std::set<Point> &points);
 
     /** Stream operator << redefinition. */
     friend std::ostream &operator<<(std::ostream &out, Cluster &cluster);
@@ -53,6 +55,9 @@ public:
     /** Accessor for private _points field. */
     std::vector<Point> points() const;
 
+    /** Adds point to cluster. */
+    void addPoint(Point p);
+
     /** Returns the size of the cluster, i.e. the number of elements
      *  that it contains. */
     int size();
@@ -69,26 +74,23 @@ public:
 private:
 
     std::vector<Point> _points;                // vector of points composing the cluster
-    std::set<Point> _consensusSet;             // set of points that matches with the model
-                                               // (aren't necessarely inside the set
-                                               // of points composing the cluster)
-    bool _preferenceSet[MAX_POINTS_ON_SCREEN]; // preference set of the cluster
+
 };
 
 std::map<Point, int> generatePointIndexes();
 
 /** Generates preference matrix from cluster */
-std::vector<std::vector<bool>> computePM(const std::set<Cluster> &clusters, const std::set<Point> dataSet);
+std::vector<std::vector<bool>> computePM(const std::vector<Cluster> &clusters, const std::set<Point> dataSet);
 
 /** Returns the transposate of the given pm. */
 std::vector<std::vector<bool>> transposatePM(const std::vector<std::vector<bool>> &pm);
 
-std::vector<std::set<Cluster>> extractPSfromPM(const std::set<Cluster> &clusters, const std::vector<std::vector<bool>> &pm);
+std::vector<std::set<Cluster>> extractPSfromPM(const std::vector<Cluster> &clusters, const std::vector<std::vector<bool>> &pm);
 
 /** Returns the Jaccard distance (between 0 and 1) from 2 vectors a and b. */
 double jaccard(std::vector<Cluster> a, std::vector<Cluster> b);
 
 /** Performs linking action and updates given parameters. */
-void link(std::set<Cluster> &clusters, std::set<Point> &dataSet);
+void link(std::vector<Cluster> &clusters, std::set<Point> &dataSet);
 
 #endif // CLUSTER_H

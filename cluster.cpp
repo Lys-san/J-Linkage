@@ -2,6 +2,13 @@
 
 Cluster::Cluster() {}
 
+
+Cluster::Cluster(const Cluster& other) {
+    for(auto point : other.points()) {
+        _points.emplace_back(point);
+    }
+}
+
 Cluster::Cluster(Point p) {
     //_points.insert(p);
 }
@@ -18,9 +25,9 @@ Cluster::Cluster(const std::set<Point> &points) {
 Cluster::~Cluster() {}
 
 
-std::set<Cluster> Cluster::sampleDataSet(const std::set<Point> &points) {
+std::vector<Cluster> Cluster::sampleDataSet(const std::set<Point> &points) {
     auto dataSet = points;                 // copy data set points
-    std::set<Cluster> clusters; // our set of clusters
+    std::vector<Cluster> clusters; // our set of clusters
 
     // building clusters until no more points in data set
     while(dataSet.size() > 0) {
@@ -54,7 +61,7 @@ std::set<Cluster> Cluster::sampleDataSet(const std::set<Point> &points) {
 
 
         auto cluster = Cluster(clusterPoints);
-        clusters.emplace(cluster);
+        clusters.emplace_back(cluster);
 
 
     }
@@ -72,6 +79,10 @@ std::vector<Point> Cluster::points() const {
     return _points;
 }
 
+
+void Cluster::addPoint(Point p) {
+    _points.emplace_back(p);
+}
 
 int Cluster::size() {
     return _points.size();
@@ -112,7 +123,7 @@ std::vector<Cluster> computePS(const std::vector<std::vector<Cluster>> preferenc
 
 ////////////////////////////////////////////////////////////////////////////////////
 
-std::vector<std::vector<bool>> computePM(const std::set<Cluster> &clusters, const std::set<Point> dataSet) {
+std::vector<std::vector<bool>> computePM(const std::vector<Cluster> &clusters, const std::set<Point> dataSet) {
     //std::vector<std::vector<bool>> pm; // preference matrix
     std::vector<std::vector<bool>> pm(0, std::vector<bool>(0, false));
 
@@ -130,7 +141,7 @@ std::vector<std::vector<bool>> computePM(const std::set<Cluster> &clusters, cons
     pm = transposatePM(pm);
     return pm;
 }
-std::vector<std::set<Cluster>> extractPSfromPM(const std::set<Cluster> &clusters, const std::vector<std::vector<bool>> &pm) {
+std::vector<std::set<Cluster>> extractPSfromPM(const std::vector<Cluster> &clusters, const std::vector<std::vector<bool>> &pm) {
     std::vector<Cluster> clustersVect(clusters.begin(), clusters.end());
     std::vector<std::set<Cluster>> preferenceSets;
     int index;
@@ -174,17 +185,14 @@ double jaccard(std::vector<Cluster> a, std::vector<Cluster> b) {
 
 }
 
-void link(std::set<Cluster> &clusters, std::set<Point> &dataSet) {
-
-    std::vector<Cluster> clustersVect(clusters.begin(), clusters.end());
-
+void link(std::vector<Cluster> &clusters, std::set<Point> &dataSet) {
     auto pm = computePM(clusters, dataSet);
     auto preferenceSets = extractPSfromPM(clusters, pm); // vector of sets
 
     std::pair<Cluster, Cluster> closest;
 
     // find closest clusters according to jaccard distance
-    for(auto c1 : clustersVect) {
+    for(auto c1 : clusters) {
         // TODO (?) : put the following code (cluster PS computing) in a function
         // compute c1's PS
         std::vector<std::vector<Cluster>> c1PointsPs;
@@ -208,7 +216,7 @@ void link(std::set<Cluster> &clusters, std::set<Point> &dataSet) {
 
 
         // for each other buffer
-        for(auto c2 : clustersVect) {
+        for(auto c2 : clusters) {
             // compute c2's PS
             std::vector<std::vector<Cluster>> c2PointsPs;
             for(auto point : c2.points()) {
@@ -236,11 +244,16 @@ void link(std::set<Cluster> &clusters, std::set<Point> &dataSet) {
     }
 
     // merge clusters
+    auto it = std::find(clusters.begin(), clusters.end(), closest.first);
+    int index1 = std::distance(clusters.begin(), it);
 
     for(auto point : closest.second.points()) {
-        closest.first.points().emplace_back(point);
+        clusters.at(index1).addPoint(point);
+        std::cout << "[DEBUG] cluster size is now " << clusters.at(index1).size() << std::endl;
     }
+    std::cout << "[DEBUG] BEFORE REMOVE " << clusters.size() << std::endl;
+    clusters.erase(std::find(clusters.begin(), clusters.end(), closest.second));
+    std::cout << "[DEBUG] AFTER REMOVE " << clusters.size() << std::endl;
 
-    clusters.erase(clusters.find(closest.second));
 
 }

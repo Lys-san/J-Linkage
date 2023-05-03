@@ -1,7 +1,7 @@
 /** 
  * Author        : Lysandre M. (lysandre.macke@enpc.fr)
  * Created       : 04-26-2023
- * Last modified : 04-27-2023
+ * Last modified : 05-03-2023
  * 
  * Implementation of the J-linkage algorithm for multi-model estimation.
  * Using the Imagine++ library.
@@ -56,7 +56,6 @@ int main() {
     std::cout << "[DEBUG] data set of size = " << dataSet.size() << std::endl;
 
 
-    Imagine::milliSleep(1000);
 
     // cluster generation
     auto clusters = Cluster::sampleDataSet(dataSet);
@@ -65,7 +64,6 @@ int main() {
     int i = 0;
 
     for(auto cluster:clusters) {
-
         i++;
         auto col = cols[i % N_COLORS];
         for(auto point : cluster.points()) {
@@ -80,17 +78,25 @@ int main() {
                 p[i++] = point;
             }
             Line line = Line(p[0], p[1]);
-            std::cout << "[DEBUG] line length is " << line.squaredLength() << std::endl;
-            line.display(col);
         }
     }
 
     double avg = 0.;
+    while(clusters.size() > 1) {
+        std::cout << "------------" << std::endl;
+        link(clusters, dataSet);
 
-    std::cout << "[DEBUG] before clusters : " << clusters.size() << std::endl;
-    link(clusters, dataSet);
-    std::cout << "[DEBUG] after clusters : " << clusters.size() << std::endl;
+        clearWindow();
 
+
+        for(auto cluster:clusters) {
+            i++;
+            auto col = cols[i % N_COLORS];
+            for(auto point : cluster.points()) {
+                point.display(col);
+            }
+        }
+    }
 
 
     Imagine::endGraphics();

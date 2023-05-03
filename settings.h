@@ -1,7 +1,7 @@
 /**
  * Author        : Lysandre M. (lysandre.macke@enpc.fr)
  * Created       : 04-28-2023
- * Last modified : 04-28-2023
+ * Last modified : 05-03-2023
  *
  * Global parameters for J-Linkage algorithm. */
 
@@ -11,14 +11,14 @@
 #define EPSILON       0.02   // threshold for consensus set computing
 #define Z             1      // normalization constant
 #define SQUARED_SIGMA 1      // for random sampling
-#define COLOR_PACK {Imagine::BLACK,   \
-                    Imagine::BLUE,    \
+#define COLOR_PACK {Imagine::RED,   \
+                    Imagine::GREEN,    \
                     Imagine::CYAN,    \
-                    Imagine::GREEN,   \
+                    Imagine::BLUE,   \
                     Imagine::MAGENTA, \
                     Imagine::ORANGE,  \
                     Imagine::PURPLE,  \
-                    Imagine::RED,     \
+                    Imagine::BLACK,     \
                     Imagine::YELLOW   \
                     } // color pack for clusters display
 
