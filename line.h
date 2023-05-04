@@ -1,7 +1,7 @@
 /**
  * Author        : Lysandre M. (lysandre.macke@enpc.fr)
  * Created       : 04-27-2023
- * Last modified : 04-27-2023 */
+ * Last modified : 05-04-2023 */
 
 #ifndef LINE_H
 #define LINE_H
@@ -33,6 +33,14 @@ public:
 
     /** Stream operator << redefinition. */
     friend std::ostream &operator<<(std::ostream &out, Line &line);
+
+    /**
+     * < operator redefinition for Line objects.
+     *
+     * @param other the comparing Line.
+     * @return true if the current line is < than the other.
+     */
+    bool operator<(const Line &other) const;
 
     /** Accessor for private field _a. */
     double a() const;

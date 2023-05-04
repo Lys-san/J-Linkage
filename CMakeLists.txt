@@ -17,5 +17,7 @@ add_executable(
     cluster.cpp
     settings.h
     model.h
-    model.cpp)
+    model.cpp
+    util.h
+    util.cpp)
 ImagineUseModules(jlk Graphics)

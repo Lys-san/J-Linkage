@@ -20,7 +20,8 @@ int main() {
     Imagine::openWindow(WINDOW_WIDTH, WINDOW_HEIGHT);
 
     // seed initialization
-    srand((unsigned int)time(0));
+    srand((unsigned int)time(0)); // uncomment this line after debugging
+//    srand(0); // for debug
 
     std::set<Point> dataSet;
 
@@ -58,6 +59,10 @@ int main() {
 
     // cluster generation
     auto clusters = Cluster::sampleDataSet(dataSet);
+    // extract models
+    auto models = extractModels(clusters);
+    // compute PM
+    auto pm = computePM(models, dataSet);
 
     Imagine::Color cols[] = COLOR_PACK;
     int i = 0;
@@ -85,7 +90,7 @@ int main() {
     int index = 0;
     while(linkable) {
         std::cout << "link index : " << index++ << std::endl;
-        linkable = link(clusters, dataSet);
+        linkable = link(clusters, dataSet, pm, models);
         if(!linkable) {
             std::cout << "HERE" << std::endl;
         }

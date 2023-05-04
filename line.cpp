@@ -58,6 +58,10 @@ std::ostream &operator<<(std::ostream &out, Line &line) {
     return out;
 }
 
+bool Line::operator<(const Line &other) const {
+    return _a < other._a && _b < other._b; // actually this is a random definition, just to be able to make sets
+}
+
 void Line::display() {
     Point tmp1 = _p1.scale(WINDOW_WIDTH, WINDOW_HEIGHT);
     Point tmp2 = _p2.scale(WINDOW_WIDTH, WINDOW_HEIGHT);

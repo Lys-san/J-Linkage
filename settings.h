@@ -10,7 +10,7 @@
 
 #define EPSILON       0.02   // threshold for consensus set computing
 #define Z             1      // normalization constant
-#define SQUARED_SIGMA 1      // for random sampling
+#define SQUARED_SIGMA 2      // for random sampling
 #define COLOR_PACK {Imagine::RED,   \
                     Imagine::GREEN,    \
                     Imagine::CYAN,    \
@@ -22,8 +22,8 @@
                     Imagine::YELLOW   \
                     } // color pack for clusters display
 
-#define N_INLIERS     40
-#define N_OUTLIERS    60
+#define N_INLIERS     20
+#define N_OUTLIERS    30
 
 #define N_COLORS 9
 

@@ -12,6 +12,7 @@
 #include "point.h"
 #include "model.h"
 #include "line.h" // this will be deleted in final version of the code
+#include "util.h"
 
 
 /** Represents a cluster of points, which can eventually be view as a model hypothesis.
@@ -83,23 +84,52 @@ private:
 
 };
 
+///////////////////////////////////////////////////////////////////////////////////////////
+
 std::map<Point, int> generatePointIndexes();
 
-/** Generates preference matrix from cluster */
-std::vector<std::vector<bool>> computePM(const std::vector<Cluster> &clusters, const std::set<Point> dataSet);
+///** Generates preference matrix from cluster */
+//std::vector<std::vector<bool>> computePM(
+//        const std::vector<Cluster> &clusters,
+//        const std::set<Point> dataSet
+//        );
+
+/** Generates preference matrix of data set */
+std::vector<std::vector<bool>> computePM(
+        const std::vector<Line> &models,
+        const std::set<Point> dataSet
+        );
 
 /** Returns the transposate of the given pm. */
 std::vector<std::vector<bool>> transposatePM(const std::vector<std::vector<bool>> &pm);
 
-std::vector<std::set<Cluster>> extractPSfromPM(const std::vector<Cluster> &clusters, const std::vector<std::vector<bool>> &pm);
+std::vector<std::set<Line>> extractPSfromPM(
+        const std::vector<Line> &models,
+        const std::vector<std::vector<bool>> &pm);
 
 /** Returns the Jaccard distance (between 0 and 1) from 2 vectors a and b. */
-double jaccard(std::vector<Cluster> a, std::vector<Cluster> b);
+double jaccard(
+        std::vector<Cluster> a,
+        std::vector<Cluster> b
+        );
 
 /** Performs linking action and updates given parameters. */
-bool link(std::vector<Cluster> &clusters, std::set<Point> &dataSet);
+bool link(
+        std::vector<Cluster> &clusters,
+        std::set<Point> &dataSet,
+        const std::vector<std::vector<bool>> &pm,
+        const std::vector<Line> &models
+        );
 
 /** Returns a copy of the biggest cluster contained in the given vector. */
 Cluster findBiggest(const std::vector<Cluster> &clusters);
+
+/**
+ * Extract models from clusters, asserting that cluster contains the number of points required
+ * @param clusters
+ * @return
+ */
+std::vector<Line> extractModels(const std::vector<Cluster> &clusters);
+
 
 #endif // CLUSTER_H
