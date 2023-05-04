@@ -1,6 +1,0 @@
-.gitignore
-Makefile
-.cmake/
-*.json
-.git/
-CMakeLists.txt.user
