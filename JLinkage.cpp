@@ -90,6 +90,12 @@ int main() {
 
 
         for(auto cluster:clusters) {
+            if(cluster.size() > 2) {
+                std::cout << "=====" << std::endl;
+                std::cout << "cluster of size " << cluster.size() << std::endl;
+                std::cout << "=====" << std::endl;
+            }
+
             i++;
             auto col = cols[i % N_COLORS];
             for(auto point : cluster.points()) {

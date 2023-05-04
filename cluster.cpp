@@ -246,10 +246,11 @@ void link(std::vector<Cluster> &clusters, std::set<Point> &dataSet) {
     // merge clusters
     auto it = std::find(clusters.begin(), clusters.end(), closest.first);
     int index1 = std::distance(clusters.begin(), it);
+    Cluster &mergingCluster = clusters[index1];
 
     for(auto point : closest.second.points()) {
-        clusters.at(index1).addPoint(point);
-        std::cout << "[DEBUG] cluster size is now " << clusters.at(index1).size() << std::endl;
+        mergingCluster.addPoint(point);
+        std::cout << "[DEBUG] cluster size is now " << mergingCluster.size() << std::endl;
     }
     std::cout << "[DEBUG] BEFORE REMOVE " << clusters.size() << std::endl;
     clusters.erase(std::find(clusters.begin(), clusters.end(), closest.second));
