@@ -1,7 +1,7 @@
 /**
  * Author        : Lysandre M. (lysandre.macke@enpc.fr)
  * Created       : 04-27-2023
- * Last modified : 05-03-2023 */
+ * Last modified : 05-04-2023 */
 
 #ifndef CLUSTER_H
 #define CLUSTER_H
@@ -58,6 +58,12 @@ public:
     /** Adds point to cluster. */
     void addPoint(Point p);
 
+    /** Accepts all points. */
+    void validate();
+
+    /** Rejects all points. */
+    void invalidate();
+
     /** Returns the size of the cluster, i.e. the number of elements
      *  that it contains. */
     int size();
@@ -92,5 +98,8 @@ double jaccard(std::vector<Cluster> a, std::vector<Cluster> b);
 
 /** Performs linking action and updates given parameters. */
 bool link(std::vector<Cluster> &clusters, std::set<Point> &dataSet);
+
+/** Returns a copy of the biggest cluster contained in the given vector. */
+Cluster findBiggest(const std::vector<Cluster> &clusters);
 
 #endif // CLUSTER_H

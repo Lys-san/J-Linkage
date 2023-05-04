@@ -25,7 +25,7 @@ int main() {
     std::set<Point> dataSet;
 
     // random point generation
-    for(int i = 0; i < 40; i++) {
+    for(int i = 0; i < N_OUTLIERS; i++) {
         Point p = Point::randomlyGenerated();
         p.display();
         dataSet.emplace(p);
@@ -46,10 +46,9 @@ int main() {
     //line.display();
 
 
-    for(int i = 0; i < 60; i++) {
+    for(int i = 0; i < N_INLIERS; i++) {
         Point pp = line.randomPoint();
         pp.addNoise();
-        std::cout << pp << std::endl;
         pp.display();
         dataSet.emplace(pp);
     }
@@ -83,7 +82,9 @@ int main() {
 
     double avg = 0.;
     auto linkable = true;
+    int index = 0;
     while(linkable) {
+        std::cout << "link index : " << index++ << std::endl;
         linkable = link(clusters, dataSet);
         if(!linkable) {
             std::cout << "HERE" << std::endl;
@@ -99,6 +100,22 @@ int main() {
             }
         }
     }
+
+    auto model = findBiggest(clusters);
+    model.validate();
+    for(auto cluster : clusters) {
+        if(cluster == model) {
+            cluster.validate();
+        }
+
+        for(auto point : cluster.points()) {
+            point.display();
+        }
+    }
+
+    std::cout << "Ending with " << clusters.size() << " clusters.";
+
+
 
 
     Imagine::endGraphics();

@@ -86,6 +86,17 @@ void Cluster::addPoint(Point p) {
     _points.emplace_back(p);
 }
 
+void Cluster::validate() {
+    for(Point &point : _points) {
+        point.accept();
+    }
+}
+
+void Cluster::invalidate() {
+    for(auto point : _points) {
+        point.reject();
+    }
+}
 int Cluster::size() {
     return _points.size();
 }
@@ -266,6 +277,15 @@ bool link(std::vector<Cluster> &clusters, std::set<Point> &dataSet) {
         clusters.erase(it2);
     }
     return linkable;
+}
 
-
+Cluster findBiggest(const std::vector<Cluster> &clusters) {
+    assert(clusters.size() > 0);
+    Cluster biggest = clusters[0];
+    for(auto cluster : clusters) {
+        if(cluster.size() > biggest.size()) {
+            biggest = cluster;
+        }
+    }
+    return biggest;
 }

@@ -1,7 +1,7 @@
 /**
  * Author        : Lysandre M. (lysandre.macke@enpc.fr)
  * Created       : 04-28-2023
- * Last modified : 05-03-2023
+ * Last modified : 05-04-2023
  *
  * Global parameters for J-Linkage algorithm. */
 
@@ -21,6 +21,9 @@
                     Imagine::BLACK,     \
                     Imagine::YELLOW   \
                     } // color pack for clusters display
+
+#define N_INLIERS     40
+#define N_OUTLIERS    60
 
 #define N_COLORS 9
 
