@@ -91,6 +91,6 @@ std::vector<std::set<Cluster>> extractPSfromPM(const std::vector<Cluster> &clust
 double jaccard(std::vector<Cluster> a, std::vector<Cluster> b);
 
 /** Performs linking action and updates given parameters. */
-void link(std::vector<Cluster> &clusters, std::set<Point> &dataSet);
+bool link(std::vector<Cluster> &clusters, std::set<Point> &dataSet);
 
 #endif // CLUSTER_H

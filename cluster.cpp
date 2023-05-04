@@ -71,7 +71,9 @@ std::vector<Cluster> Cluster::sampleDataSet(const std::set<Point> &points) {
 }
 
 std::ostream &operator<<(std::ostream &out, Cluster &cluster) {
-    // TODO
+    for(auto point : cluster.points()) {
+        std::cout << point << std::endl;
+    }
     return out;
 }
 
@@ -145,7 +147,6 @@ std::vector<std::set<Cluster>> extractPSfromPM(const std::vector<Cluster> &clust
     std::vector<Cluster> clustersVect(clusters.begin(), clusters.end());
     std::vector<std::set<Cluster>> preferenceSets;
     int index;
-    std::cout << pm.size() << std::endl;
 
     for(auto psLine : pm) {
         index = 0;
@@ -176,6 +177,9 @@ std::vector<std::vector<bool>> transposatePM(const std::vector<std::vector<bool>
 
 
 double jaccard(std::vector<Cluster> a, std::vector<Cluster> b) {
+    if(a == b) {
+        return 1.;
+    }
     std::vector<Cluster> u; // union
     std::set_union(a.begin(), a.end(), b.begin(), b.end(), std::back_inserter(u));
 
@@ -185,11 +189,15 @@ double jaccard(std::vector<Cluster> a, std::vector<Cluster> b) {
 
 }
 
-void link(std::vector<Cluster> &clusters, std::set<Point> &dataSet) {
+bool link(std::vector<Cluster> &clusters, std::set<Point> &dataSet) {
     auto pm = computePM(clusters, dataSet);
     auto preferenceSets = extractPSfromPM(clusters, pm); // vector of sets
 
-    std::pair<Cluster, Cluster> closest;
+    int iFirst = 0;
+    int iSecond = 0;
+    double minDist = 1.;
+    bool linkable = false;
+
 
     // find closest clusters according to jaccard distance
     for(auto c1 : clusters) {
@@ -237,24 +245,27 @@ void link(std::vector<Cluster> &clusters, std::set<Point> &dataSet) {
                             );
             }
             // compare
-            if(jaccard(ps1, ps2) < 1.) {
-                closest = std::make_pair(c1, c2);
+            auto dist = jaccard(ps1, ps2);
+            if(dist < 1. && dist < minDist && !(c1 == c2)) {
+                iFirst = std::find(clusters.begin(), clusters.end(), c1) - clusters.begin();
+                iSecond = std::find(clusters.begin(), clusters.end(), c2) - clusters.begin();
+                linkable = true;
             }
         }
     }
 
     // merge clusters
-    auto it = std::find(clusters.begin(), clusters.end(), closest.first);
-    int index1 = std::distance(clusters.begin(), it);
-    Cluster &mergingCluster = clusters[index1];
+    if(linkable) {
+        Cluster &mergingCluster = clusters[iFirst];
 
-    for(auto point : closest.second.points()) {
-        mergingCluster.addPoint(point);
-        std::cout << "[DEBUG] cluster size is now " << mergingCluster.size() << std::endl;
+        for(auto point : clusters[iSecond].points()) {
+            mergingCluster.addPoint(point);
+        }
+        auto it2 = std::find(clusters.begin(), clusters.end(), clusters[iSecond]);
+
+        clusters.erase(it2);
     }
-    std::cout << "[DEBUG] BEFORE REMOVE " << clusters.size() << std::endl;
-    clusters.erase(std::find(clusters.begin(), clusters.end(), closest.second));
-    std::cout << "[DEBUG] AFTER REMOVE " << clusters.size() << std::endl;
+    return linkable;
 
 
 }
