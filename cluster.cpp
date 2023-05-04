@@ -146,24 +146,45 @@ std::vector<std::vector<bool>> computePM(const std::vector<Line> &models, const 
     return pm;
 }
 
-
-std::vector<std::set<Line>> extractPSfromPM(const std::vector<Line> &models, const std::vector<std::vector<bool>> &pm) {
-    std::vector<std::set<Line>> preferenceSets;
+std::vector<std::set<Cluster>> old_extractPSfromPM(const std::vector<Cluster> &clusters, const std::vector<std::vector<bool>> &pm) {
+    std::vector<std::set<Cluster>> preferenceSets;
     int index;
 
     for(auto psLine : pm) {
         index = 0;
         // constructing each ps
-        std::set<Line> ps;
+        std::set<Cluster> ps;
         for(auto b : psLine) {
 
             if(b) {
-                ps.emplace(models.at(index));
+                ps.emplace(clusters.at(index));
             }
             index++;
         }
         preferenceSets.emplace_back(ps);
     }
+    return preferenceSets;
+}
+
+
+std::vector<std::set<Line>> extractPSfromPM(const std::vector<Line> &models, const std::vector<std::vector<bool>> &pm) {
+    // the code compiles out of funcion but calling this function does shit
+    std::vector<std::set<Line>> preferenceSets;
+    int index;
+
+//    for(auto psLine : pm) {
+//        index = 0;
+//        // constructing each ps
+//        std::set<Line> ps;
+//        for(auto b : psLine) {
+
+//            if(b) {
+//                ps.emplace(models.at(index));
+//            }
+//            index++;
+//        }
+//        preferenceSets.emplace_back(ps);
+//    }
     return preferenceSets;
 }
 
@@ -198,7 +219,11 @@ bool link(std::vector<Cluster> &clusters,
           const std::vector<Line> &models
           ) {
     debugPrint("Entering linking function");
-    auto preferenceSets = extractPSfromPM(models, pm); // vector of sets
+    auto preferenceSets = old_extractPSfromPM(clusters, pm); // vector of sets
+
+
+
+//    std::vector<std::set<Line>> preferenceSets = extractPSfromPM(models, pm); // vector of sets
 
     int iFirst = 0;
     int iSecond = 0;

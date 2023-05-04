@@ -103,6 +103,11 @@ std::vector<std::vector<bool>> computePM(
 /** Returns the transposate of the given pm. */
 std::vector<std::vector<bool>> transposatePM(const std::vector<std::vector<bool>> &pm);
 
+std::vector<std::set<Cluster>> old_extractPSfromPM(
+        const std::vector<Cluster> &clusters,
+        const std::vector<std::vector<bool>> &pm);
+
+
 std::vector<std::set<Line>> extractPSfromPM(
         const std::vector<Line> &models,
         const std::vector<std::vector<bool>> &pm);

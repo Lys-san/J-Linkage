@@ -14,6 +14,8 @@ Line::Line(Point p1, Point p2):
     _b = p1.y() - _a*p1.x();
 }
 
+Line::Line() {}
+
 Line::~Line() {}
 
 double Line::a() const {
@@ -42,7 +44,7 @@ Point Line::randomPoint() {
     }
 
     double x = Point::randomCoordinate();
-    double min = -_b/_a;
+//    double min = -_b/_a;
 
     // to guaranty that the selectionned point is in [0, 1]²
     // code better later

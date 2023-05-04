@@ -25,8 +25,10 @@
  *  If displayed on screen, consider that the y axis is going down. */
 class Line {
 public:
-    /** Constructor */
+    /** Constructors */
     Line(Point p1, Point p2);
+
+    Line();
 
     /** Destructor */
     ~Line();
