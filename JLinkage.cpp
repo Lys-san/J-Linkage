@@ -48,38 +48,32 @@ int main() {
 
 
     auto linkable = true;
-//    int index = 0;
-//    while(linkable) {
-//        std::cout << "link index : " << index++ << std::endl;
-//        linkable = link(clusters, dataSet, pm, models);
-//        if(!linkable) {
-//            std::cout << "HERE" << std::endl;
-//        }
-//        clearWindow();
+    int index = 0;
+    while(linkable) {
+        std::cout << "link index : " << index++ << std::endl;
+        linkable = link(clusters, dataSet, pm, models);
+        if(!linkable) {
+            std::cout << "HERE" << std::endl;
+        }
+        clearWindow();
 
 
-//        for(auto cluster:clusters) {
-//            i++;
-//            auto col = cols[i % N_COLORS];
-//            for(auto point : cluster.points()) {
-//                point.display(col);
-//            }
-//        }
-//    }
+        Cluster::displayClusters(clusters);
+    }
 
-//    auto model = findBiggest(clusters);
-//    model.validate();
-//    for(auto cluster : clusters) {
-//        if(cluster == model) {
-//            cluster.validate();
-//        }
+    auto model = findBiggest(clusters);
+    model.validate();
+    for(auto cluster : clusters) {
+        if(cluster == model) {
+            cluster.validate();
+        }
 
-//        for(auto point : cluster.points()) {
-//            point.display();
-//        }
-//    }
+        for(auto point : cluster.points()) {
+            point.display();
+        }
+    }
 
-//    std::cout << "Ending with " << clusters.size() << " clusters.";
+    std::cout << "Ending with " << clusters.size() << " clusters.";
 
 
 

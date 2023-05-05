@@ -1,5 +1,8 @@
 #include "line.h"
 
+Line::Line() {}
+
+
 Line::Line(Point p1, Point p2):
     _p1 {p1},
     _p2 {p2} {
@@ -14,7 +17,15 @@ Line::Line(Point p1, Point p2):
     _b = p1.y() - _a*p1.x();
 }
 
-Line::Line() {}
+
+Line::Line(const Line& other):
+    _p1 {other._p1},
+    _p2 {other._p2},
+    _a {other._a},
+    _b {other._b} {
+
+}
+
 
 Line Line::randomlyGenerated() {
     Point p = Point::randomlyGeneratedOnYvalue(0.);
@@ -63,6 +74,10 @@ std::ostream &operator<<(std::ostream &out, Line &line) {
 
 bool Line::operator<(const Line &other) const {
     return _a < other._a && _b < other._b; // actually this is a random definition, just to be able to make sets
+}
+
+bool Line::operator==(const Line &other) const {
+    return _a == other._a && _b == other._b;
 }
 
 void Line::display() {

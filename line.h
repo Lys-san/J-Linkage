@@ -30,6 +30,8 @@ public:
 
     Line();
 
+    Line(const Line& other);
+
     /**
      * Factory method that creates and returns a randomy generated
      * Line object.
@@ -51,6 +53,15 @@ public:
      * @return true if the current line is < than the other.
      */
     bool operator<(const Line &other) const;
+
+    /**
+     * == operator redefinition for Line objects.
+     *
+     * @param other
+     * @return
+     */
+    bool operator==(const Line &other) const;
+
 
     /** Accessor for private field _a. */
     double a() const;

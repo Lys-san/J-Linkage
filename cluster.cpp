@@ -162,45 +162,24 @@ std::vector<std::vector<bool>> computePM(const std::vector<Line> &models, const 
     return pm;
 }
 
-std::vector<std::set<Cluster>> old_extractPSfromPM(const std::vector<Cluster> &clusters, const std::vector<std::vector<bool>> &pm) {
-    std::vector<std::set<Cluster>> preferenceSets;
+std::vector<std::set<Line>> extractPSfromPM(const std::vector<Line> &models, const std::vector<std::vector<bool>> &pm) {
+    std::vector<std::set<Line>> preferenceSets;
+
     int index;
 
     for(auto psLine : pm) {
         index = 0;
         // constructing each ps
-        std::set<Cluster> ps;
+        std::set<Line> ps;
         for(auto b : psLine) {
 
             if(b) {
-                ps.emplace(clusters.at(index));
+                ps.emplace(models.at(index));
             }
             index++;
         }
         preferenceSets.emplace_back(ps);
     }
-    return preferenceSets;
-}
-
-
-std::vector<std::set<Line>> extractPSfromPM(const std::vector<Line> &models, const std::vector<std::vector<bool>> &pm) {
-    // the code compiles out of funcion but calling this function does shit
-    std::vector<std::set<Line>> preferenceSets;
-    int index;
-
-//    for(auto psLine : pm) {
-//        index = 0;
-//        // constructing each ps
-//        std::set<Line> ps;
-//        for(auto b : psLine) {
-
-//            if(b) {
-//                ps.emplace(models.at(index));
-//            }
-//            index++;
-//        }
-//        preferenceSets.emplace_back(ps);
-//    }
     return preferenceSets;
 }
 
@@ -216,14 +195,14 @@ std::vector<std::vector<bool>> transposatePM(const std::vector<std::vector<bool>
 
 
 
-double jaccard(std::vector<Cluster> a, std::vector<Cluster> b) {
+double jaccard(std::vector<Line> a, std::vector<Line> b) {
     if(a == b) {
         return 1.;
     }
-    std::vector<Cluster> u; // union
+    std::vector<Line> u; // union
     std::set_union(a.begin(), a.end(), b.begin(), b.end(), std::back_inserter(u));
 
-    std::vector<Cluster> n; // intersection
+    std::vector<Line> n; // intersection
     std::set_intersection(a.begin(), a.end(), b.begin(), b.end(), std::back_inserter(n));
     return (u.size() - n.size())/static_cast<double>(u.size());
 
@@ -235,11 +214,11 @@ bool link(std::vector<Cluster> &clusters,
           const std::vector<Line> &models
           ) {
     debugPrint("Entering linking function");
-    auto preferenceSets = old_extractPSfromPM(clusters, pm); // vector of sets
+//    auto preferenceSets = old_extractPSfromPM(clusters, pm); // vector of sets
+
+    auto preferenceSets = extractPSfromPM(models, pm); // vector of sets
 
 
-
-//    std::vector<std::set<Line>> preferenceSets = extractPSfromPM(models, pm); // vector of sets
 
     int iFirst = 0;
     int iSecond = 0;
@@ -252,16 +231,16 @@ bool link(std::vector<Cluster> &clusters,
         // TODO (?) : put the following code (cluster PS computing) in a function
         // compute c1's PS
         debugPrint("computing first cluster's PS");
-        std::vector<std::vector<Cluster>> c1PointsPs;
+        std::vector<std::vector<Line>> c1PointsPs;
         for(auto point : c1.points()) {
             // we assume that the point is contained in the dataSet...
             int pointIndex = std::distance(dataSet.begin(), dataSet.find(point));
-            std::vector<Cluster> tmp(preferenceSets.at(pointIndex).begin(), preferenceSets.at(pointIndex).end());
+            std::vector<Line> tmp(preferenceSets.at(pointIndex).begin(), preferenceSets.at(pointIndex).end());
             c1PointsPs.emplace_back(tmp);
         }
         // do the intersection
-        std::vector<Cluster> ps1 = c1PointsPs.at(0); // asume that we have at least 1 point
-        for(std::vector<Cluster> ps : c1PointsPs) {
+        std::vector<Line> ps1 = c1PointsPs.at(0); // asume that we have at least 1 point
+        for(auto ps : c1PointsPs) {
             std::set_intersection(
                         ps.begin(),
                         ps.end(),
@@ -277,16 +256,16 @@ bool link(std::vector<Cluster> &clusters,
             // compute c2's PS
             debugPrint("computing second cluster's PS");
 
-            std::vector<std::vector<Cluster>> c2PointsPs;
+            std::vector<std::vector<Line>> c2PointsPs;
             for(auto point : c2.points()) {
                 // we assume that the point is contained in the dataSet...
                 int pointIndex = std::distance(dataSet.begin(), dataSet.find(point));
-                std::vector<Cluster> tmp(preferenceSets.at(pointIndex).begin(), preferenceSets.at(pointIndex).end());
+                std::vector<Line> tmp(preferenceSets.at(pointIndex).begin(), preferenceSets.at(pointIndex).end());
                 c2PointsPs.emplace_back(tmp);
             }
             // do the intersection
             debugPrint("constructing intersection...");
-            std::vector<Cluster> ps2 = c2PointsPs.at(0); // asume that we have at least 1 point
+            std::vector<Line> ps2 = c2PointsPs.at(0); // asume that we have at least 1 point
             for(auto ps : c2PointsPs) {
                 std::set_intersection(
                             ps.begin(),
