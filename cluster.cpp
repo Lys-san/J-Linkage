@@ -65,8 +65,8 @@ std::vector<Cluster> Cluster::sampleDataSet(const std::set<Point> &points) {
 
 
     }
-    std::cout<< "[DEBUG] End of random sampling. Generated cluster is size  "
-             << clusters.size()  << " for total data of size  : " << points.size() << std::endl;
+    std::cout<< "[DEBUG] End of random sampling. Generated "
+             << clusters.size()  << " clusters for total data of size  : " << points.size() << std::endl;
     return clusters;
 }
 
@@ -97,8 +97,24 @@ void Cluster::invalidate() {
         point.reject();
     }
 }
+
+
+
 int Cluster::size() {
     return _points.size();
+}
+
+void Cluster::displayClusters(const std::vector<Cluster> &clusters) {
+    Imagine::Color cols[] = COLOR_PACK;
+    int i = 0;
+
+    for(auto cluster:clusters) {
+        i++;
+        auto col = cols[i % N_COLORS];
+        for(auto point : cluster.points()) {
+            point.display(col);
+        }
+    }
 }
 
 Line Cluster::extractLineModel() {
@@ -326,3 +342,5 @@ std::vector<Line> extractModels(const std::vector<Cluster> &clusters) {
     }
     return models;
 }
+
+

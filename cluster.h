@@ -65,9 +65,18 @@ public:
     /** Rejects all points. */
     void invalidate();
 
+
+
     /** Returns the size of the cluster, i.e. the number of elements
      *  that it contains. */
     int size();
+
+    /**
+     * Displays the given vectors, automatically assigning each one a color.
+     *
+     * @param clusters the clusters to be displayed.
+     */
+    static void displayClusters(const std::vector<Cluster> &clusters);
 
     // TODO : redo this funcion for generic ModelType model insead of Line
     Line extractLineModel();
@@ -135,6 +144,8 @@ Cluster findBiggest(const std::vector<Cluster> &clusters);
  * @return
  */
 std::vector<Line> extractModels(const std::vector<Cluster> &clusters);
+
+
 
 
 #endif // CLUSTER_H

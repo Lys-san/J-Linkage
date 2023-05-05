@@ -31,41 +31,23 @@ int main() {
     auto inliers = Line::randomlyGenerated().generateRandomInliers(N_INLIERS);
     dataSet.insert(inliers.begin(), inliers.end());
 
-    std::cout << "[DEBUG] data set of size = " << dataSet.size() << std::endl;
-    Point::displayPoints(dataSet);
+    //Point::displayPoints(dataSet);
 
     // cluster generation
     auto clusters = Cluster::sampleDataSet(dataSet);
     // extract models from sampled set
     auto models = extractModels(clusters);
+    std::cout << "[DEBUG] Extracted " << models.size() << " models." << std::endl;
+
+    Cluster::displayClusters(clusters);
+
+    // compute PM
+    auto pm = computePM(models, dataSet);
+    std::cout << "[DEBUG] Computed " << pm.size() << " preference sets" << std::endl;
+    std::cout << "[DEBUG] Each PS considers " << pm[0].size() << " models" << std::endl;
 
 
-//    // compute PM
-//    auto pm = computePM(models, dataSet);
-
-//    Imagine::Color cols[] = COLOR_PACK;
-//    int i = 0;
-
-//    for(auto cluster:clusters) {
-//        i++;
-//        auto col = cols[i % N_COLORS];
-//        for(auto point : cluster.points()) {
-//            point.display(col);
-//        }
-
-//        // for debug, remove after (or maybe not...?)
-//        if(cluster.size() == 2) {
-//            Point p[2];
-//            int i = 0;
-//            for(auto point : cluster.points()) {
-//                p[i++] = point;
-//            }
-//            Line line = Line(p[0], p[1]);
-//        }
-//    }
-
-//    double avg = 0.;
-//    auto linkable = true;
+    auto linkable = true;
 //    int index = 0;
 //    while(linkable) {
 //        std::cout << "link index : " << index++ << std::endl;
