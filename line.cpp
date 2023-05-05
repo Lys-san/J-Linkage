@@ -100,7 +100,7 @@ std::set<Point> Line::computeConsensusSet(const std::set<Point> &dataSet) {
     std::set<Point> cs;
     for(Point point : dataSet) {
         if(distance(*this, point) <= EPSILON) {
-            point.accept();
+            //point.accept();
             cs.emplace(point);
         }
     }

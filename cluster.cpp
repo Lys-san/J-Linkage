@@ -105,6 +105,14 @@ int Cluster::size() {
 }
 
 void Cluster::displayClusters(const std::vector<Cluster> &clusters) {
+    for(auto cluster:clusters) {
+        for(auto point : cluster.points()) {
+            point.display();
+        }
+    }
+}
+
+void Cluster::displayClustersWithColors(const std::vector<Cluster> &clusters) {
     Imagine::Color cols[] = COLOR_PACK;
     int i = 0;
 
@@ -142,12 +150,25 @@ bool Cluster::operator==(const Cluster &other) const {
     return this->points() == other.points();
 }
 
-std::vector<Cluster> computePS(const std::vector<std::vector<Cluster>> preferenceSets) {
-    auto ps = *preferenceSets.begin();
-    for(auto clusterSet : preferenceSets) {
-        std::set_union(clusterSet.begin(), clusterSet.end(), ps.begin(), ps.end(), std::back_inserter(ps));
+std::vector<Line> Cluster::computePS(const std::set<Point> &dataSet, const std::map<Point, std::set<Line>> &preferenceSets) {
+    std::vector<std::vector<Line>> clustersPointsPS;
+    for(auto point : _points) {
+        auto tmp = preferenceSets.at(point);
+        std::vector<Line> ps(tmp.begin(), tmp.end());
+        clustersPointsPS.emplace_back(ps);
     }
-    return ps;
+    // intersection
+    std::vector<Line> inter = clustersPointsPS[0];
+    for(auto ps : clustersPointsPS) {
+        std::set_intersection(
+                    ps.begin(),
+                    ps.end(),
+                    inter.begin(),
+                    inter.end(),
+                    std::back_inserter(inter)
+                    );
+    }
+    return inter;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -162,23 +183,30 @@ std::vector<std::vector<bool>> computePM(const std::vector<Line> &models, const 
     return pm;
 }
 
-std::vector<std::set<Line>> extractPSfromPM(const std::vector<Line> &models, const std::vector<std::vector<bool>> &pm) {
-    std::vector<std::set<Line>> preferenceSets;
+std::map<Point, std::set<Line>> extractPSfromPM(const std::set<Point> &dataSet, const std::vector<Line> &models, const std::vector<std::vector<bool>> &pm) {
+    std::map<Point, std::set<Line>> preferenceSets;
 
-    int index;
+    int pointIndex;
+    int modelIndex;
 
-    for(auto psLine : pm) {
-        index = 0;
+    pointIndex = 0;
+    for(auto psLine : pm) { // loop rows (points)
+        modelIndex = 0;
+        auto pointIterator = dataSet.begin();
+        std::advance(pointIterator, pointIndex);
+
         // constructing each ps
         std::set<Line> ps;
-        for(auto b : psLine) {
+
+        for(auto b : psLine) { // loop on columns (models)
 
             if(b) {
-                ps.emplace(models.at(index));
+                ps.insert(models.at(modelIndex));
             }
-            index++;
+            modelIndex++;
         }
-        preferenceSets.emplace_back(ps);
+        pointIndex++;
+        preferenceSets.emplace(std::make_pair(*pointIterator, ps));
     }
     return preferenceSets;
 }
@@ -213,69 +241,25 @@ bool link(std::vector<Cluster> &clusters,
           const std::vector<std::vector<bool>> &pm,
           const std::vector<Line> &models
           ) {
-    debugPrint("Entering linking function");
-//    auto preferenceSets = old_extractPSfromPM(clusters, pm); // vector of sets
 
-    auto preferenceSets = extractPSfromPM(models, pm); // vector of sets
+    auto preferenceSets = extractPSfromPM(dataSet, models, pm); // map of point/set
+
+    std::cout << "[DEBUG] Computed " << preferenceSets.size() << " preference sets" << std::endl;
 
 
-
-    int iFirst = 0;
-    int iSecond = 0;
-    double minDist = 1.;
-    bool linkable = false;
+    int iFirst     = 0;     // index of first cluster to link
+    int iSecond    = 0;     // index of second cluster to link
+    double minDist = 1.;    // min. distance between clusters PS (default : 1.)
+    bool linkable  = false; // do we apply link operation on clusters or not
 
 
     // find closest clusters according to jaccard distance
     for(auto c1 : clusters) {
-        // TODO (?) : put the following code (cluster PS computing) in a function
-        // compute c1's PS
-        debugPrint("computing first cluster's PS");
-        std::vector<std::vector<Line>> c1PointsPs;
-        for(auto point : c1.points()) {
-            // we assume that the point is contained in the dataSet...
-            int pointIndex = std::distance(dataSet.begin(), dataSet.find(point));
-            std::vector<Line> tmp(preferenceSets.at(pointIndex).begin(), preferenceSets.at(pointIndex).end());
-            c1PointsPs.emplace_back(tmp);
-        }
-        // do the intersection
-        std::vector<Line> ps1 = c1PointsPs.at(0); // asume that we have at least 1 point
-        for(auto ps : c1PointsPs) {
-            std::set_intersection(
-                        ps.begin(),
-                        ps.end(),
-                        ps1.begin(),
-                        ps1.end(),
-                        std::back_inserter(ps1)
-                        );
-        }
-
-
+        auto ps1 = c1.computePS(dataSet, preferenceSets);
         // for each other buffer
         for(auto c2 : clusters) {
-            // compute c2's PS
-            debugPrint("computing second cluster's PS");
+            auto ps2 = c1.computePS(dataSet, preferenceSets);
 
-            std::vector<std::vector<Line>> c2PointsPs;
-            for(auto point : c2.points()) {
-                // we assume that the point is contained in the dataSet...
-                int pointIndex = std::distance(dataSet.begin(), dataSet.find(point));
-                std::vector<Line> tmp(preferenceSets.at(pointIndex).begin(), preferenceSets.at(pointIndex).end());
-                c2PointsPs.emplace_back(tmp);
-            }
-            // do the intersection
-            debugPrint("constructing intersection...");
-            std::vector<Line> ps2 = c2PointsPs.at(0); // asume that we have at least 1 point
-            for(auto ps : c2PointsPs) {
-                std::set_intersection(
-                            ps.begin(),
-                            ps.end(),
-                            ps1.begin(),
-                            ps1.end(),
-                            std::back_inserter(ps2)
-                            );
-            }
-            debugPrint("comparing");
             // compare
             auto dist = jaccard(ps1, ps2);
             if(dist < 1. && dist < minDist && !(c1 == c2)) {
@@ -285,7 +269,7 @@ bool link(std::vector<Cluster> &clusters,
             }
         }
     }
-    debugPrint("merging");
+
 
     // merge clusters
     if(linkable) {
@@ -301,15 +285,10 @@ bool link(std::vector<Cluster> &clusters,
     return linkable;
 }
 
-Cluster findBiggest(const std::vector<Cluster> &clusters) {
+void validateBiggestCluster(std::vector<Cluster> &clusters) {
     assert(clusters.size() > 0);
-    Cluster biggest = clusters[0];
-    for(auto cluster : clusters) {
-        if(cluster.size() > biggest.size()) {
-            biggest = cluster;
-        }
-    }
-    return biggest;
+    auto it = std::max_element(clusters.begin(), clusters.end());
+    it->validate();
 }
 
 std::vector<Line> extractModels(const std::vector<Cluster> &clusters) {

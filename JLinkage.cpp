@@ -31,8 +31,6 @@ int main() {
     auto inliers = Line::randomlyGenerated().generateRandomInliers(N_INLIERS);
     dataSet.insert(inliers.begin(), inliers.end());
 
-    //Point::displayPoints(dataSet);
-
     // cluster generation
     auto clusters = Cluster::sampleDataSet(dataSet);
     // extract models from sampled set
@@ -46,37 +44,19 @@ int main() {
     std::cout << "[DEBUG] Computed " << pm.size() << " preference sets" << std::endl;
     std::cout << "[DEBUG] Each PS considers " << pm[0].size() << " models" << std::endl;
 
-
+    // link until model is found
     auto linkable = true;
-    int index = 0;
     while(linkable) {
-        std::cout << "link index : " << index++ << std::endl;
         linkable = link(clusters, dataSet, pm, models);
-        if(!linkable) {
-            std::cout << "HERE" << std::endl;
-        }
         clearWindow();
-
-
-        Cluster::displayClusters(clusters);
+        Cluster::displayClustersWithColors(clusters);
     }
 
-    auto model = findBiggest(clusters);
-    model.validate();
-    for(auto cluster : clusters) {
-        if(cluster == model) {
-            cluster.validate();
-        }
-
-        for(auto point : cluster.points()) {
-            point.display();
-        }
-    }
+    // display model
+    validateBiggestCluster(clusters);
+    Cluster::displayClusters(clusters);
 
     std::cout << "Ending with " << clusters.size() << " clusters.";
-
-
-
 
     Imagine::endGraphics();
     return 0;

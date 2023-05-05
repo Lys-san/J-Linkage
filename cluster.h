@@ -76,6 +76,13 @@ public:
      */
     static void displayClusters(const std::vector<Cluster> &clusters);
 
+    /**
+     * Displays the given vectors, automatically assigning each one a color.
+     *
+     * @param clusters the clusters to be displayed.
+     */
+    static void displayClustersWithColors(const std::vector<Cluster> &clusters);
+
     // TODO : redo this funcion for generic ModelType model insead of Line
     Line extractLineModel();
 
@@ -83,7 +90,12 @@ public:
 
     /** Computes and returns the intersection of the PS of all the points
      *  contained in the cluster. */
-    std::vector<Cluster> computePS(const std::vector<std::vector<Cluster>> preferenceSets);
+    std::vector<Line> computePS(
+            const std::set<Point> &dataSet,
+            const std::map<Point,
+            std::set<Line>> &preferenceSets
+            );
+
 
 private:
 
@@ -110,7 +122,16 @@ std::vector<std::vector<bool>> computePM(
 /** Returns the transposate of the given pm. */
 std::vector<std::vector<bool>> transposatePM(const std::vector<std::vector<bool>> &pm);
 
-std::vector<std::set<Line>> extractPSfromPM(
+/**
+ * Exctracts a map associating a point with a set of models from the given PM.
+ * Requires a data set and a set of models.
+ *
+ * @param models
+ * @param pm
+ * @return
+ */
+std::map<Point, std::set<Line>> extractPSfromPM(
+        const std::set<Point> &dataSet,
         const std::vector<Line> &models,
         const std::vector<std::vector<bool>> &pm);
 
@@ -128,8 +149,8 @@ bool link(
         const std::vector<Line> &models
         );
 
-/** Returns a copy of the biggest cluster contained in the given vector. */
-Cluster findBiggest(const std::vector<Cluster> &clusters);
+/** Validates the biggest cluster contained in the given vector. */
+void validateBiggestCluster(std::vector<Cluster> &clusters);
 
 /**
  * Extract models from clusters, asserting that cluster contains the number of points required
