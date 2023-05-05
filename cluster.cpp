@@ -154,8 +154,18 @@ std::vector<Line> Cluster::computePS(const std::set<Point> &dataSet, const std::
     std::vector<std::vector<Line>> clustersPointsPS;
     for(auto point : _points) {
         auto tmp = preferenceSets.at(point);
+        std::cout << "[DEBUG] ------ " << std::endl;
+        for(auto model : tmp) {
+            std::cout << model << std::endl;
+        }
+        std::cout << "------------- " << std::endl;
+
         std::vector<Line> ps(tmp.begin(), tmp.end());
-        clustersPointsPS.emplace_back(ps);
+        // to avoid duplicates (makes the program crash for now, fix later)
+        if(std::find(clustersPointsPS.begin(), clustersPointsPS.end(), ps) != clustersPointsPS.end()) {
+            std::cout << "HERE" << std::endl;
+            clustersPointsPS.emplace_back(ps);
+        }
     }
     // intersection
     std::vector<Line> inter = clustersPointsPS[0];
@@ -170,6 +180,13 @@ std::vector<Line> Cluster::computePS(const std::set<Point> &dataSet, const std::
     }
     return inter;
 }
+
+////////////////////////////////////////////////////////////////////////////////////
+
+//std::vector<Line> Cluster::makeUnion(const std::vector<Line> &a, const std::vector<Line> &b) {
+//    std::vector<Line> res;
+
+//}
 
 ////////////////////////////////////////////////////////////////////////////////////
 
@@ -228,9 +245,33 @@ double jaccard(std::vector<Line> a, std::vector<Line> b) {
         return 1.;
     }
     std::vector<Line> u; // union
+//    std::cout << "a-------" << std::endl;
+//    for(auto line : a) {
+//        std::cout << line << std::endl;
+//    }
+//    std::cout << "-------" << std::endl;
+
+//    std::cout << "b-------" << std::endl;
+//    for(auto line : b) {
+//        std::cout << line << std::endl;
+//    }
+//    std::cout << "-------" << std::endl;
+
     std::set_union(a.begin(), a.end(), b.begin(), b.end(), std::back_inserter(u));
 
+//    std::cout << "union-------" << std::endl;
+//    for(auto line : u) {
+//        std::cout << line << std::endl;
+//    }
+//    std::cout << "-------" << std::endl;
+
     std::vector<Line> n; // intersection
+
+//    std::cout << "in,ter-------" << std::endl;
+//    for(auto line : n) {
+//        std::cout << line << std::endl;
+//    }
+//    std::cout << "-------" << std::endl;
     std::set_intersection(a.begin(), a.end(), b.begin(), b.end(), std::back_inserter(n));
     return (u.size() - n.size())/static_cast<double>(u.size());
 
@@ -244,9 +285,6 @@ bool link(std::vector<Cluster> &clusters,
 
     auto preferenceSets = extractPSfromPM(dataSet, models, pm); // map of point/set
 
-    std::cout << "[DEBUG] Computed " << preferenceSets.size() << " preference sets" << std::endl;
-
-
     int iFirst     = 0;     // index of first cluster to link
     int iSecond    = 0;     // index of second cluster to link
     double minDist = 1.;    // min. distance between clusters PS (default : 1.)
@@ -255,14 +293,23 @@ bool link(std::vector<Cluster> &clusters,
 
     // find closest clusters according to jaccard distance
     for(auto c1 : clusters) {
-        auto ps1 = c1.computePS(dataSet, preferenceSets);
+        auto ps1 = c1.computePS(dataSet, preferenceSets); // TODO : find out why PS has duplicates
         // for each other buffer
         for(auto c2 : clusters) {
-            auto ps2 = c1.computePS(dataSet, preferenceSets);
+            std::cout << "[DEBUG] on cluser : " << std::endl;
+            for(auto point : c2.points()) {
+                std::cout << point << " ";
+            }
+            std::cout << std::endl;
+
+            auto ps2 = c2.computePS(dataSet, preferenceSets);
 
             // compare
             auto dist = jaccard(ps1, ps2);
-            if(dist < 1. && dist < minDist && !(c1 == c2)) {
+
+            std::cout << "jaccard = " << dist << std::endl;
+
+            if(dist < minDist) {
                 iFirst = std::find(clusters.begin(), clusters.end(), c1) - clusters.begin();
                 iSecond = std::find(clusters.begin(), clusters.end(), c2) - clusters.begin();
                 linkable = true;
@@ -270,17 +317,15 @@ bool link(std::vector<Cluster> &clusters,
         }
     }
 
-
-    // merge clusters
     if(linkable) {
+        // merge clusters
         Cluster &mergingCluster = clusters[iFirst];
 
         for(auto point : clusters[iSecond].points()) {
             mergingCluster.addPoint(point);
         }
-        auto it2 = std::find(clusters.begin(), clusters.end(), clusters[iSecond]);
-
-        clusters.erase(it2);
+        auto it = std::find(clusters.begin(), clusters.end(), clusters[iSecond]);
+        clusters.erase(it);
     }
     return linkable;
 }

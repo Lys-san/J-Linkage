@@ -98,6 +98,31 @@ public:
 
 
 private:
+    // private methods
+
+    /**
+     * Returns the union of the two given vectors.
+     *
+     * @param a first vector
+     * @param b second vector
+     * @return
+     */
+    static std::vector<Line> makeUnion(const std::vector<Line> &a,
+                                       const std::vector<Line> &b
+                                       );
+
+    /**
+     * Returns the intersection of the two given vectors.
+     *
+     * @param a first vector
+     * @param b second vector
+     * @return
+     */
+    static std::vector<Line> makeInter(const std::vector<Line> &a,
+                                       const std::vector<Line> &b
+                                       );
+
+    // attributes
 
     std::vector<Point> _points;                // vector of points composing the cluster
 
