@@ -10,6 +10,17 @@ _y {y} {
 
 Point::~Point() {}
 
+std::set<Point> Point::generateRandomDataSetOfSize(unsigned int n) {
+    std::set<Point> dataSet;
+
+    for(int i = 0; i < n; i++) {
+        Point p = Point::randomlyGenerated();
+        dataSet.emplace(p);
+    }
+
+    return dataSet;
+}
+
 std::ostream &operator<<(std::ostream &out, Point &point) {
     out << "(" << point._x << ", " << point._y << ")";
     return out;
@@ -63,6 +74,12 @@ Point Point::randomlyGeneratedOnYvalue(double yValue) {
 void Point::display() {
     Point tmp = scale(WINDOW_WIDTH, WINDOW_HEIGHT);
     Imagine::drawCircle(tmp.x(), tmp.y(), POINT_RADIUS, POINT_COLOR);
+}
+
+void Point::displayPoints(const std::set<Point> &points) {
+    for(auto point : points) {
+        point.display();
+    }
 }
 
 void Point::display(Imagine::Color color) {

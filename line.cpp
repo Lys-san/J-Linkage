@@ -16,6 +16,12 @@ Line::Line(Point p1, Point p2):
 
 Line::Line() {}
 
+Line Line::randomlyGenerated() {
+    Point p = Point::randomlyGeneratedOnYvalue(0.);
+    Point q = Point::randomlyGeneratedOnYvalue(1.);
+    return Line(p, q);
+}
+
 Line::~Line() {}
 
 double Line::a() const {
@@ -38,20 +44,15 @@ double Line::squaredLength() {
     return squaredDistance(_p1, _p2);
 }
 
-Point Line::randomPoint() {
-    if(_a == INFTY) {
-        return Point::randomlyGeneratedOnXvalue(_p1.x());
-    }
+std::set<Point> Line::generateRandomInliers(unsigned int n) {
+    std::set<Point> inliers;
 
-    double x = Point::randomCoordinate();
-//    double min = -_b/_a;
-
-    // to guaranty that the selectionned point is in [0, 1]²
-    // code better later
-    while(_a*x + _b < 0 || _a*x + _b > 1) {
-        x = Point::randomCoordinate();
+    for(int i = 0; i < n; i++) {
+        Point pp = randomPoint();
+        pp.addNoise();
+        inliers.emplace(pp);
     }
-    return Point(x, _a*x + _b);
+    return inliers;
 }
 
 
@@ -103,6 +104,28 @@ std::vector<bool> Line::computeBooleanConsensusSet(const std::set<Point> &dataSe
     }
     return cs;
 }
+
+
+////////////////////////////////////////////////////////////////////////////////////////
+
+Point Line::randomPoint() {
+    if(_a == INFTY) {
+        return Point::randomlyGeneratedOnXvalue(_p1.x());
+    }
+
+    double x = Point::randomCoordinate();
+//    double min = -_b/_a;
+
+    // to guaranty that the selectionned point is in [0, 1]²
+    // code better later
+    while(_a*x + _b < 0 || _a*x + _b > 1) {
+        x = Point::randomCoordinate();
+    }
+    return Point(x, _a*x + _b);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+
 
 double distance(Line line, Point point) {
     auto x = point.x();

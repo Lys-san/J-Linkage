@@ -1,7 +1,7 @@
 /**
  * Author        : Lysandre M. (lysandre.macke@enpc.fr)
  * Created       : 04-27-2023
- * Last modified : 05-03-2023 */
+ * Last modified : 05-05-2023 */
 
 #ifndef WINDOW_H
 #define WINDOW_H
@@ -20,5 +20,7 @@ public:
 
 /** Clears window by displaying a white screen. */
 void clearWindow();
+
+
 
 #endif // WINDOW_H

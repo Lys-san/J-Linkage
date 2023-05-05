@@ -1,7 +1,7 @@
 /**
  * Author        : Lysandre M. (lysandre.macke@enpc.fr)
  * Created       : 04-27-2023
- * Last modified : 04-28-2023 */
+ * Last modified : 05-05-2023 */
 
 #ifndef POINT_H
 #define POINT_H
@@ -38,6 +38,14 @@ public:
 
     /** Destructor */
     ~Point();
+
+    /**
+     * Factory method to generate n random points, returned as an immutable set.
+     *
+     * @param n the size of the set to be generated
+     * @return a set of n random points
+     */
+    static std::set<Point> generateRandomDataSetOfSize(unsigned int n);
 
     /** Stream operator << redefinition. */
     friend std::ostream &operator<<(std::ostream &out, Point &point);
@@ -96,6 +104,13 @@ public:
     /** Screen display. */
     void display();
 
+    /**
+     * Displays given set of points on the current window.
+     *
+     * @param points the set of points to display
+     */
+    static void displayPoints(const std::set<Point> &points);
+
     /** Screen display with a given color */
     void display(Imagine::Color color);
 
@@ -126,17 +141,22 @@ public:
 
 
 private:
+    // private methods
+
     /** Returns a double value in [-MAX_NOISE, MAX_NOISE]. */
     double generateNoiseValue();
 
 
     // private attributes
+
     double _x;
     double _y;
 
-
+    // does the point matched with a searched model ? (default : false)
     bool _isInlier = false;
 };
+
+////////////////////////////////////////////////////////////////////////////////////////
 
 /** Squared euclidian distance between 2 points. */
 double squaredDistance(Point p1, Point p2);

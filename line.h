@@ -30,6 +30,14 @@ public:
 
     Line();
 
+    /**
+     * Factory method that creates and returns a randomy generated
+     * Line object.
+     *
+     * @return a randomly generated Line object.
+     */
+    static Line randomlyGenerated();
+
     /** Destructor */
     ~Line();
 
@@ -59,9 +67,15 @@ public:
     /** Returns the squared distanc seperating the Line's 2 points. */
     double squaredLength();
 
-    /** Returns a randomly selected point from the current line.
-     * Guaranties that the returned point is in [0, 1]x[0, 1]. */
-    Point randomPoint();
+
+
+    /**
+     * Generates n random inlier points that matches with the line model.
+     * Points are generated with noise.
+     *
+     * @return set of points that matches the line model.
+     */
+    std::set<Point> generateRandomInliers(unsigned int n);
 
     /** Screen display of a line. */
     void display();
@@ -82,6 +96,14 @@ public:
 
 
 private:
+    // private methods
+
+    /** Returns a randomly selected point from the current line.
+     * Guaranties that the returned point is in [0, 1]x[0, 1]. */
+    Point randomPoint();
+
+    // attributes
+
     Point _p1;      // first point
     Point _p2;      // second point
 
