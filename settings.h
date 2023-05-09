@@ -23,7 +23,7 @@
                     } // color pack for clusters display
 
 #define N_INLIERS     4
-#define N_OUTLIERS    0
+#define N_OUTLIERS    2
 
 #define N_COLORS 9
 

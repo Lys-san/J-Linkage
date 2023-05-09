@@ -98,6 +98,7 @@ public:
 
 
 private:
+
     // private methods
 
     /**
@@ -118,8 +119,8 @@ private:
      * @param b second vector
      * @return
      */
-    static std::vector<Line> makeInter(const std::vector<Line> &a,
-                                       const std::vector<Line> &b
+    static std::set<Line> makeInter(const std::set<Line> &a,
+                                       const std::set<Line> &b
                                        );
 
     // attributes
