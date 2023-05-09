@@ -150,34 +150,48 @@ bool Cluster::operator==(const Cluster &other) const {
     return this->points() == other.points();
 }
 
-std::vector<Line> Cluster::computePS(const std::set<Point> &dataSet, const std::map<Point, std::set<Line>> &preferenceSets) {
-    std::vector<std::vector<Line>> clustersPointsPS;
+std::set<Line> Cluster::computePS(const std::set<Point> &dataSet, const std::map<Point, std::set<Line>> &preferenceSets) {
+    std::vector<std::set<Line>> clustersPointsPS;
+    std::cout << "[DEBUG] before inter ------ " << std::endl;
+
     for(auto point : _points) {
-        auto tmp = preferenceSets.at(point);
-        std::cout << "[DEBUG] ------ " << std::endl;
-        for(auto model : tmp) {
+        auto ps = preferenceSets.at(point);
+
+        std::cout << "Point "<< point << " fits with models : " << std::endl;
+
+
+        clustersPointsPS.emplace_back(ps);
+        for(auto model : ps) {
             std::cout << model << std::endl;
         }
-        std::cout << "------------- " << std::endl;
+        std::cout << std::endl;
 
-        std::vector<Line> ps(tmp.begin(), tmp.end());
-        // to avoid duplicates (makes the program crash for now, fix later)
-        if(std::find(clustersPointsPS.begin(), clustersPointsPS.end(), ps) != clustersPointsPS.end()) {
-            std::cout << "HERE" << std::endl;
-            clustersPointsPS.emplace_back(ps);
-        }
+
     }
+    std::cout << "------------- " << std::endl;
+
     // intersection
-    std::vector<Line> inter = clustersPointsPS[0];
+    std::set<Line> inter = clustersPointsPS[0];
+    std::set<Line> res;
     for(auto ps : clustersPointsPS) {
         std::set_intersection(
                     ps.begin(),
                     ps.end(),
                     inter.begin(),
                     inter.end(),
-                    std::back_inserter(inter)
+                    std::inserter(res, res.begin())
                     );
+        inter.clear();
+        inter.insert(res.begin(), res.end());
     }
+
+    std::cout << "[DEBUG] afer inter ------ " << std::endl;
+    for(auto model : inter) {
+        std::cout << model << std::endl;
+    }
+    std::cout << "------------- " << std::endl;
+
+
     return inter;
 }
 
@@ -225,6 +239,7 @@ std::map<Point, std::set<Line>> extractPSfromPM(const std::set<Point> &dataSet, 
         pointIndex++;
         preferenceSets.emplace(std::make_pair(*pointIterator, ps));
     }
+
     return preferenceSets;
 }
 
@@ -240,7 +255,7 @@ std::vector<std::vector<bool>> transposatePM(const std::vector<std::vector<bool>
 
 
 
-double jaccard(std::vector<Line> a, std::vector<Line> b) {
+double jaccard(std::set<Line> a, std::set<Line> b) {
     if(a == b) {
         return 1.;
     }
@@ -272,8 +287,9 @@ double jaccard(std::vector<Line> a, std::vector<Line> b) {
 //        std::cout << line << std::endl;
 //    }
 //    std::cout << "-------" << std::endl;
-    std::set_intersection(a.begin(), a.end(), b.begin(), b.end(), std::back_inserter(n));
-    return (u.size() - n.size())/static_cast<double>(u.size());
+//    std::set_intersection(a.begin(), a.end(), b.begin(), b.end(), std::back_inserter(n));
+//    return (u.size() - n.size())/static_cast<double>(u.size());
+    return 0.;
 
 }
 

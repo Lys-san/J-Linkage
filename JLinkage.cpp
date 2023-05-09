@@ -35,7 +35,10 @@ int main() {
     auto clusters = Cluster::sampleDataSet(dataSet);
     // extract models from sampled set
     auto models = extractModels(clusters);
-    std::cout << "[DEBUG] Extracted " << models.size() << " models." << std::endl;
+    std::cout << "[DEBUG] Extracted " << models.size() << " models :" << std::endl;
+    for(auto model : models) {
+        std::cout << model << std::endl;
+    }
 
     Cluster::displayClusters(clusters);
 
@@ -43,10 +46,20 @@ int main() {
     auto pm = computePM(models, dataSet);
     std::cout << "[DEBUG] Computed " << pm.size() << " preference sets" << std::endl;
     std::cout << "[DEBUG] Each PS considers " << pm[0].size() << " models" << std::endl;
+    std::cout << "-----------" << std::endl;
+    for(auto line : pm) {
+        for(auto value : line) {
+            std::cout << value << " ";
+        }
+        std::cout << std::endl;
+    }
+    std::cout << "-----------" << std::endl;
 
     // link until model is found
     auto linkable = true;
+    int linkIndex = 0;
     while(linkable) {
+        std::cout << "Index : " << linkIndex++ << std::endl;
         linkable = link(clusters, dataSet, pm, models);
         clearWindow();
         Cluster::displayClustersWithColors(clusters);

@@ -1,7 +1,7 @@
 /**
  * Author        : Lysandre M. (lysandre.macke@enpc.fr)
  * Created       : 04-27-2023
- * Last modified : 05-04-2023 */
+ * Last modified : 05-09-2023 */
 
 #ifndef LINE_H
 #define LINE_H

@@ -1,7 +1,7 @@
 /**
  * Author        : Lysandre M. (lysandre.macke@enpc.fr)
  * Created       : 04-27-2023
- * Last modified : 05-05-2023 */
+ * Last modified : 05-09-2023 */
 
 #ifndef CLUSTER_H
 #define CLUSTER_H
@@ -90,7 +90,7 @@ public:
 
     /** Computes and returns the intersection of the PS of all the points
      *  contained in the cluster. */
-    std::vector<Line> computePS(
+    std::set<Line> computePS(
             const std::set<Point> &dataSet,
             const std::map<Point,
             std::set<Line>> &preferenceSets
@@ -162,8 +162,8 @@ std::map<Point, std::set<Line>> extractPSfromPM(
 
 /** Returns the Jaccard distance (between 0 and 1) from 2 vectors a and b. */
 double jaccard(
-        std::vector<Line> a,
-        std::vector<Line> b
+        std::set<Line> a,
+        std::set<Line> b
         );
 
 /** Performs linking action and updates given parameters. */
