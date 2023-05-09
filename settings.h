@@ -22,8 +22,8 @@
                     Imagine::YELLOW   \
                     } // color pack for clusters display
 
-#define N_INLIERS     20
-#define N_OUTLIERS    2
+#define N_INLIERS     30
+#define N_OUTLIERS    15
 
 #define N_COLORS 9
 

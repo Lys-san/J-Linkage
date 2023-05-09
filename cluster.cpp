@@ -248,16 +248,16 @@ std::map<Point, std::set<Line>> extractPSfromPM(const std::set<Point> &dataSet, 
         pointIndex++;
         preferenceSets.emplace(std::make_pair(*pointIterator, ps));
     }
-    std::cout << "[DEBUG] computed preference sets : " << std::endl;
-    for(auto ps : preferenceSets) {
-        auto p = ps.first;
-        std::cout << "for point " << p << std::endl;
+//    std::cout << "[DEBUG] computed preference sets : " << std::endl;
+//    for(auto ps : preferenceSets) {
+//        auto p = ps.first;
+//        std::cout << "for point " << p << std::endl;
 
-        for(auto model : ps.second) {
-            std::cout << model << std::endl;
-        }
-        std::cout << std::endl;
-    }
+//        for(auto model : ps.second) {
+//            std::cout << model << std::endl;
+//        }
+//        std::cout << std::endl;
+//    }
 
     return preferenceSets;
 }
@@ -282,18 +282,18 @@ double jaccard(std::set<Line> a, std::set<Line> b) {
     std::set<Line> n; // intersection
     n = Cluster::makeInter(a, b);
 
-    std::cout << "[DEBUG] ---" << std::endl;
-    std::cout << "-- C1" << std::endl;
+//    std::cout << "[DEBUG] ---" << std::endl;
+//    std::cout << "-- C1" << std::endl;
 
-    for(auto line : a) {
-        std::cout << line << std::endl;
-    }
+//    for(auto line : a) {
+//        std::cout << line << std::endl;
+//    }
 
-    std::cout << "-- C2" << std::endl;
+//    std::cout << "-- C2" << std::endl;
 
-    for(auto line : b) {
-        std::cout << line << std::endl;
-    }
+//    for(auto line : b) {
+//        std::cout << line << std::endl;
+//    }
     return (u.size() - n.size())/static_cast<double>(u.size());
 }
 
@@ -348,7 +348,6 @@ bool link(std::vector<Cluster> &clusters,
     }
 
     if(linkable) {
-        std::cout << "AA " << iFirst << " " << iSecond << std::endl;
         // merge clusters
         Cluster &mergingCluster = clusters[iFirst];
 
