@@ -96,6 +96,17 @@ public:
             std::set<Line>> &preferenceSets
             );
 
+    /**
+     * Returns the intersection of the two given vectors.
+     *
+     * @param a first vector
+     * @param b second vector
+     * @return
+     */
+    static std::set<Line> makeInter(const std::set<Line> &a,
+                                       const std::set<Line> &b
+                                       );
+
 
 private:
 
@@ -112,16 +123,7 @@ private:
                                        const std::vector<Line> &b
                                        );
 
-    /**
-     * Returns the intersection of the two given vectors.
-     *
-     * @param a first vector
-     * @param b second vector
-     * @return
-     */
-    static std::set<Line> makeInter(const std::set<Line> &a,
-                                       const std::set<Line> &b
-                                       );
+
 
     // attributes
 

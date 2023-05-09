@@ -110,14 +110,12 @@ std::set<Point> Line::computeConsensusSet(const std::set<Point> &dataSet) {
 std::vector<bool> Line::computeBooleanConsensusSet(const std::set<Point> &dataSet) {
     std::vector<bool> cs;
     for(Point point : dataSet) {
-        std::cout << "AAAAAAAA " << distance(*this, point) << " " << EPSILON << std::endl;
 
         if(distance(*this, point) <= EPSILON) {
 
             cs.emplace_back(true);
         }
         else {
-            std::cout << "NO" << std::endl;
             cs.emplace_back(false);
         }
     }

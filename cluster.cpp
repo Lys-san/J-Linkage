@@ -152,23 +152,17 @@ bool Cluster::operator==(const Cluster &other) const {
 
 std::set<Line> Cluster::computePS(const std::set<Point> &dataSet, const std::map<Point, std::set<Line>> &preferenceSets) {
     std::vector<std::set<Line>> clustersPointsPS;
-    std::cout << "[DEBUG] before inter ------ " << std::endl;
 
     for(auto point : _points) {
         auto ps = preferenceSets.at(point);
 
-        std::cout << "Point "<< point << " fits with models : " << std::endl;
 
 
         clustersPointsPS.emplace_back(ps);
-        for(auto model : ps) {
-            std::cout << model << std::endl;
-        }
-        std::cout << std::endl;
+
 
 
     }
-    std::cout << "------------- " << std::endl;
 
     // intersection // the intersection does not work
     std::set<Line> inter = clustersPointsPS[0]; // first PS
@@ -188,13 +182,6 @@ std::set<Line> Cluster::computePS(const std::set<Point> &dataSet, const std::map
         inter.clear();
         inter.insert(res.begin(), res.end());
     }
-
-    std::cout << "[DEBUG] afer inter ------ " << std::endl;
-    for(auto model : inter) {
-        std::cout << model << std::endl;
-    }
-    std::cout << "------------- " << std::endl;
-
 
     return inter;
 }
@@ -249,16 +236,12 @@ std::map<Point, std::set<Line>> extractPSfromPM(const std::set<Point> &dataSet, 
         // constructing each ps
         std::set<Line> ps;
         auto val = *pointIterator;
-        std::cout << "Computing PS for point " << val << std::endl;
         for(auto b : psLine) { // loop on columns (models)
 
             if(b) {
                 auto tmp = models.at(modelIndex);
-                std::cout << "Inserting " << tmp << std::endl; // values look oK
 
-                if(ps.insert(models.at(modelIndex)) .second == false) { // the problem is that somehow, computer thinks that the element is alread present
-                    std::cout << "NOT INSERTED" << std::endl;
-            }
+                ps.insert(models.at(modelIndex));
             }
             modelIndex++;
         }
@@ -297,8 +280,20 @@ double jaccard(std::set<Line> a, std::set<Line> b) {
     u.insert(b.begin(), b.end());
 
     std::set<Line> n; // intersection
-    std::set_intersection(a.begin(), a.end(), b.begin(), b.end(), std::inserter(n, n.begin()));
+    n = Cluster::makeInter(a, b);
 
+    std::cout << "[DEBUG] ---" << std::endl;
+    std::cout << "-- C1" << std::endl;
+
+    for(auto line : a) {
+        std::cout << line << std::endl;
+    }
+
+    std::cout << "-- C2" << std::endl;
+
+    for(auto line : b) {
+        std::cout << line << std::endl;
+    }
     return (u.size() - n.size())/static_cast<double>(u.size());
 }
 
@@ -317,35 +312,43 @@ bool link(std::vector<Cluster> &clusters,
     int iSecond    = 0;     // index of second cluster to link
     double minDist = 1.;    // min. distance between clusters PS (default : 1.)
     bool linkable  = false; // do we apply link operation on clusters or not
-
+    int i = 0;
+    int j = 0;
 
     // find closest clusters according to jaccard distance
     for(auto c1 : clusters) {
-        auto ps1 = c1.computePS(dataSet, preferenceSets); // TODO : find out why PS has duplicates
+        j = 0;
+        auto ps1 = c1.computePS(dataSet, preferenceSets);
         // for each other buffer
         for(auto c2 : clusters) {
-            for(auto point : c2.points()) {
-                std::cout << point << " ";
-            }
-            std::cout << std::endl;
-
             auto ps2 = c2.computePS(dataSet, preferenceSets);
 
             double dist = 1.; // default : do no merge
 
-            if(c1 == c2) { // compare iterators so we don't try to merge a cluster with itself
+            if(i != j) { // compare iterators so we don't try to merge a cluster with itself
                 dist = jaccard(ps1, ps2);
+
             }
 
+
+
+            std::cout << "DIST : " << i << " " << j << " " << dist << std::endl;
+
             if(dist < minDist) {
-                iFirst = std::find(clusters.begin(), clusters.end(), c1) - clusters.begin();
-                iSecond = std::find(clusters.begin(), clusters.end(), c2) - clusters.begin();
+                minDist = dist;
+//                iFirst = std::find(clusters.begin(), clusters.end(), c1) - clusters.begin();
+//                iSecond = std::find(clusters.begin(), clusters.end(), c2) - clusters.begin();
+                iFirst = i;
+                iSecond = j;
                 linkable = true;
             }
+            j++;
         }
+        i++;
     }
 
     if(linkable) {
+        std::cout << "AA " << iFirst << " " << iSecond << std::endl;
         // merge clusters
         Cluster &mergingCluster = clusters[iFirst];
 
@@ -353,6 +356,8 @@ bool link(std::vector<Cluster> &clusters,
             mergingCluster.addPoint(point);
         }
         auto it = std::find(clusters.begin(), clusters.end(), clusters[iSecond]);
+        std::cout << "Erased cluster was size " << it->size() << std::endl;
+
         clusters.erase(it);
 
         std::cout << "Merged cluster is size " << mergingCluster.size() << std::endl;
@@ -367,7 +372,7 @@ void validateBiggestCluster(std::vector<Cluster> &clusters) {
     int n = 0;
 
 
-    auto biggest = clusters[0];
+    Cluster &biggest = clusters[0];
     for(auto cluster : clusters) {
         n += cluster.size();
         if(biggest < cluster) {
@@ -376,7 +381,7 @@ void validateBiggestCluster(std::vector<Cluster> &clusters) {
     }
 //    auto it = std::max_element(clusters.begin(), clusters.end());
     std::cout << "Found big cluster of size " << biggest.size() << " and " << n - biggest.size() << " outliers." << std::endl;
-//    it->validate();
+    biggest.validate();
 }
 
 std::vector<Line> extractModels(const std::vector<Cluster> &clusters) {
