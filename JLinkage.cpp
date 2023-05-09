@@ -43,7 +43,7 @@ int main() {
     Cluster::displayClusters(clusters);
 
     // compute PM
-    auto pm = computePM(models, dataSet);
+    auto pm = computePM(models, dataSet); // the PM *looks* ok
     std::cout << "[DEBUG] Computed " << pm.size() << " preference sets" << std::endl;
     std::cout << "[DEBUG] Each PS considers " << pm[0].size() << " models" << std::endl;
     std::cout << "-----------" << std::endl;

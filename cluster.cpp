@@ -221,23 +221,39 @@ std::map<Point, std::set<Line>> extractPSfromPM(const std::set<Point> &dataSet, 
     int modelIndex;
 
     pointIndex = 0;
-    for(auto psLine : pm) { // loop rows (points)
+    for(auto psLine : pm) { // loop on rows (points)
         modelIndex = 0;
         auto pointIterator = dataSet.begin();
         std::advance(pointIterator, pointIndex);
 
         // constructing each ps
         std::set<Line> ps;
-
+        auto val = *pointIterator;
+        std::cout << "Computing PS for point " << val << std::endl;
         for(auto b : psLine) { // loop on columns (models)
 
             if(b) {
-                ps.insert(models.at(modelIndex));
+                auto tmp = models.at(modelIndex);
+                std::cout << "Inserting " << tmp << std::endl; // values look oK
+
+                if(ps.insert(models.at(modelIndex)) .second == false) { // the problem is that somehow, computer thinks that the element is alread present
+                    std::cout << "NOT INSERTED" << std::endl;
+            }
             }
             modelIndex++;
         }
         pointIndex++;
         preferenceSets.emplace(std::make_pair(*pointIterator, ps));
+    }
+    std::cout << "[DEBUG] computed preference sets : " << std::endl;
+    for(auto ps : preferenceSets) {
+        auto p = ps.first;
+        std::cout << "for point " << p << std::endl;
+
+        for(auto model : ps.second) {
+            std::cout << model << std::endl;
+        }
+        std::cout << std::endl;
     }
 
     return preferenceSets;

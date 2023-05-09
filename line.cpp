@@ -73,7 +73,7 @@ std::ostream &operator<<(std::ostream &out, Line &line) {
 }
 
 bool Line::operator<(const Line &other) const {
-    return _a < other._a && _b < other._b; // actually this is a random definition, just to be able to make sets
+    return _a < other._a && _b != other._b; // actually this is a random definition, just to be able to make sets
 }
 
 bool Line::operator==(const Line &other) const {
