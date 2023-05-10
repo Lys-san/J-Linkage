@@ -1,6 +1,6 @@
 09-05-2023 commit link 178bd52
 
-tests made with randomly generated dataset for **single model detection** (line). 
+Detail : tests made with randomly generated dataset for **single model detection** (line). 
 
 Constants :
 
@@ -11,21 +11,30 @@ SQUARED_SIGMA = 2
 ```
 
 ### With 0 outliers :
- 
-40 inliers : 10 tests/10
-30 inliers : 10 tests/10
-20 inliers : 10 tests/10
-10 inliers : 10 tests/10
+
+| Inliers     | tests pass  |
+| ----------- | ----------- |
+| 40          | 10/10       |
+| 30          | 10/10       |
+| 20          | 10/10       |
+| 10          | 10/10       |
+
 
 ### With 10 outliers :
 
-40 inliers : 9 tests/10
-30 inliers : 5 tests/10
-20 inliers : 9 tests/10
+| Inliers     | tests pass  |
+| ----------- | ----------- |
+| 40          | 9/10        |
+| 30          | 5/10        |
+| 20          | 9/10        |
+
 
 ### With 20 outliers :
 
-40 inliers : 2 tests/10
+| Inliers     | tests pass  |
+| ----------- | ----------- |
+| 40          | 2/10        |
+
 
 ## Observation
 

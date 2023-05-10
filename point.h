@@ -1,7 +1,7 @@
 /**
  * Author        : Lysandre M. (lysandre.macke@enpc.fr)
  * Created       : 04-27-2023
- * Last modified : 05-05-2023 */
+ * Last modified : 05-10-2023 */
 
 #ifndef POINT_H
 #define POINT_H
@@ -20,7 +20,6 @@
 #define OUTLIER_COLOR        Imagine::BLACK
 #define INLIER_COLOR         Imagine::GREEN
 #define POINT_COLOR          isInlier() ? INLIER_COLOR : OUTLIER_COLOR
-#define MAX_NOISE            0.01
 #define MAX_POINTS_ON_SCREEN 2048
 
 /** Represents a point in the 2D space.

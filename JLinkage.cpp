@@ -27,9 +27,12 @@ int main() {
     // random point generation
     auto dataSet = Point::generateRandomDataSetOfSize(N_OUTLIERS);
 
-    // model with noise
-    auto inliers = Line::randomlyGenerated().generateRandomInliers(N_INLIERS);
-    dataSet.insert(inliers.begin(), inliers.end());
+    // models with noise
+    auto inliers1 = Line::randomlyGenerated().generateRandomInliers(N_INLIERS);
+    dataSet.insert(inliers1.begin(), inliers1.end());
+
+    auto inliers2 = Line::randomlyGenerated().generateRandomInliers(N_INLIERS);
+    dataSet.insert(inliers2.begin(), inliers2.end());
 
     // cluster generation
     auto clusters = Cluster::sampleDataSet(dataSet);
@@ -41,6 +44,12 @@ int main() {
     }
 
     Cluster::displayClusters(clusters);
+    // for debug, displaying how points are sampled with lines
+    for(auto cluster : clusters) {
+        if(cluster.size() == 2) {
+            cluster.extractLineModel().display();
+        }
+    }
 
     // compute PM
     auto pm = computePM(models, dataSet); // the PM *looks* ok
@@ -59,7 +68,7 @@ int main() {
     auto linkable = true;
     int linkIndex = 0;
     while(linkable) {
-        std::cout << "Index : " << linkIndex++ << std::endl;
+        linkIndex++;
         linkable = link(clusters, dataSet, pm, models);
         clearWindow();
         Cluster::displayClustersWithColors(clusters);
@@ -67,9 +76,9 @@ int main() {
 
     // display model
     validateBiggestCluster(clusters);
-    Cluster::displayClusters(clusters);
+//    Cluster::displayClusters(clusters);
 
-    std::cout << "Ending with " << clusters.size() << " clusters.";
+    std::cout << "Ending with " << clusters.size() << " clusters after " << linkIndex << " linkages." << std::endl;
 
     Imagine::endGraphics();
     return 0;

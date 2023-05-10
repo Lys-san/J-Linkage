@@ -119,10 +119,12 @@ void Cluster::displayClustersWithColors(const std::vector<Cluster> &clusters) {
     for(auto cluster:clusters) {
         i++;
         auto col = cols[i % N_COLORS];
+        std::cout << "[DEBUG] displaying cluster of size " << cluster.size() << " in " << col << std::endl;
         for(auto point : cluster.points()) {
             point.display(col);
         }
     }
+    std::cout << "[DEBUG] I displayed " << i << " colored clusters. " << std::endl;
 }
 
 Line Cluster::extractLineModel() {
@@ -164,18 +166,10 @@ std::set<Line> Cluster::computePS(const std::set<Point> &dataSet, const std::map
 
     }
 
-    // intersection // the intersection does not work
+    // intersection
     std::set<Line> inter = clustersPointsPS[0]; // first PS
     std::set<Line> res;
     for(auto ps : clustersPointsPS) { // loop on each PS
-
-//        std::set_intersection(
-//                    ps.begin(),
-//                    ps.end(),
-//                    inter.begin(),
-//                    inter.end(),
-//                    std::inserter(res, res.begin())
-//                    );
         res = makeInter(inter, ps);
 
         // put res values into inter for next intersection operation
@@ -185,13 +179,6 @@ std::set<Line> Cluster::computePS(const std::set<Point> &dataSet, const std::map
 
     return inter;
 }
-
-////////////////////////////////////////////////////////////////////////////////////
-
-//std::vector<Line> Cluster::makeUnion(const std::vector<Line> &a, const std::vector<Line> &b) {
-//    std::vector<Line> res;
-
-//}
 
 std::set<Line> Cluster::makeInter(const std::set<Line> &a, const std::set<Line> &b) {
     std::set<Line> inter;
@@ -208,6 +195,10 @@ std::set<Line> Cluster::makeInter(const std::set<Line> &a, const std::set<Line> 
     return inter;
 
 }
+
+////////////////////////////////////////////////////////////////////////////////////
+
+
 
 ////////////////////////////////////////////////////////////////////////////////////
 
@@ -272,29 +263,17 @@ std::vector<std::vector<bool>> transposatePM(const std::vector<std::vector<bool>
     return transposate;
 }
 
-
-
 double jaccard(std::set<Line> a, std::set<Line> b) {
     std::set<Line> u; // union
-    u.insert(a.begin(), a.end());
-    u.insert(b.begin(), b.end());
+//    u.insert(a.begin(), a.end()); // construction the union is a waste, we only need its size
+//    u.insert(b.begin(), b.end());
+
+    double u_size = a.size() + b.size();
 
     std::set<Line> n; // intersection
     n = Cluster::makeInter(a, b);
 
-//    std::cout << "[DEBUG] ---" << std::endl;
-//    std::cout << "-- C1" << std::endl;
-
-//    for(auto line : a) {
-//        std::cout << line << std::endl;
-//    }
-
-//    std::cout << "-- C2" << std::endl;
-
-//    for(auto line : b) {
-//        std::cout << line << std::endl;
-//    }
-    return (u.size() - n.size())/static_cast<double>(u.size());
+    return (u_size - n.size())/u_size;
 }
 
 bool link(std::vector<Cluster> &clusters,
@@ -302,9 +281,6 @@ bool link(std::vector<Cluster> &clusters,
           const std::vector<std::vector<bool>> &pm,
           const std::vector<Line> &models
           ) {
-    if(clusters.size() < 2) {
-        return false;
-    }
 
     auto preferenceSets = extractPSfromPM(dataSet, models, pm); // map of point/set
 
@@ -312,8 +288,8 @@ bool link(std::vector<Cluster> &clusters,
     int iSecond    = 0;     // index of second cluster to link
     double minDist = 1.;    // min. distance between clusters PS (default : 1.)
     bool linkable  = false; // do we apply link operation on clusters or not
-    int i = 0;
-    int j = 0;
+    int i          = 0;     // first loop index
+    int j          = 0;     // second loop index
 
     // find closest clusters according to jaccard distance
     for(auto c1 : clusters) {
@@ -323,21 +299,13 @@ bool link(std::vector<Cluster> &clusters,
         for(auto c2 : clusters) {
             auto ps2 = c2.computePS(dataSet, preferenceSets);
 
-            double dist = 1.; // default : do no merge
+            // compare indexes so we don't try to merge a cluster with itself
+            double dist = i != j ? jaccard(ps1, ps2) : 1.;
 
-            if(i != j) { // compare iterators so we don't try to merge a cluster with itself
-                dist = jaccard(ps1, ps2);
-
-            }
-
-
-
-            std::cout << "DIST : " << i << " " << j << " " << dist << std::endl;
+            std::cout << "DIST : " << dist << std::endl;
 
             if(dist < minDist) {
                 minDist = dist;
-//                iFirst = std::find(clusters.begin(), clusters.end(), c1) - clusters.begin();
-//                iSecond = std::find(clusters.begin(), clusters.end(), c2) - clusters.begin();
                 iFirst = i;
                 iSecond = j;
                 linkable = true;
@@ -351,16 +319,14 @@ bool link(std::vector<Cluster> &clusters,
         // merge clusters
         Cluster &mergingCluster = clusters[iFirst];
 
+        // put second buffer's content into first
         for(auto point : clusters[iSecond].points()) {
             mergingCluster.addPoint(point);
         }
         auto it = std::find(clusters.begin(), clusters.end(), clusters[iSecond]);
-        std::cout << "Erased cluster was size " << it->size() << std::endl;
 
+        // erase second buffer
         clusters.erase(it);
-
-        std::cout << "Merged cluster is size " << mergingCluster.size() << std::endl;
-        std::cout << "clusters size : " << clusters.size() << std::endl;
     }
     return linkable;
 }
@@ -370,11 +336,10 @@ void validateBiggestCluster(std::vector<Cluster> &clusters) {
 
     int n = 0;
 
-
     Cluster &biggest = clusters[0];
     for(auto cluster : clusters) {
         n += cluster.size();
-        if(biggest < cluster) {
+        if(biggest.size() < cluster.size()) {
             biggest = cluster;
         }
     }
