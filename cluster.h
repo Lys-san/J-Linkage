@@ -83,6 +83,13 @@ public:
      */
     static void displayClustersWithColors(const std::vector<Cluster> &clusters);
 
+    /**
+     * Displays only the clusters that are validated.
+     *
+     * @param clusters the clusters to be displayed.
+     */
+    static void displayValidated(const std::vector<Cluster> &clusters);
+
     // TODO : redo this funcion for generic ModelType model insead of Line
     Line extractLineModel();
 
@@ -106,6 +113,10 @@ public:
     static std::set<Line> makeInter(const std::set<Line> &a,
                                        const std::set<Line> &b
                                        );
+    /**
+     * @return true if contains a minimum number of points.
+     */
+    bool isModel();
 
 
 private:
@@ -177,8 +188,8 @@ bool link(
         const std::vector<Line> &models
         );
 
-/** Validates the biggest cluster contained in the given vector. */
-void validateBiggestCluster(std::vector<Cluster> &clusters);
+/** Validates the biggest clusters contained in the given vector. */
+void validateNBiggestClusters(unsigned int n, std::vector<Cluster> &clusters);
 
 /**
  * Extract models from clusters, asserting that cluster contains the number of points required

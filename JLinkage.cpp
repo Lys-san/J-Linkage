@@ -28,11 +28,10 @@ int main() {
     auto dataSet = Point::generateRandomDataSetOfSize(N_OUTLIERS);
 
     // models with noise
-    auto inliers1 = Line::randomlyGenerated().generateRandomInliers(N_INLIERS);
-    dataSet.insert(inliers1.begin(), inliers1.end());
-
-    auto inliers2 = Line::randomlyGenerated().generateRandomInliers(N_INLIERS);
-    dataSet.insert(inliers2.begin(), inliers2.end());
+    for(auto i = 0; i < N_MODELS; i++) {
+        auto inliers = Line::randomlyGenerated().generateRandomInliers(N_INLIERS);
+        dataSet.insert(inliers.begin(), inliers.end());
+    }
 
     // cluster generation
     auto clusters = Cluster::sampleDataSet(dataSet);
@@ -45,11 +44,11 @@ int main() {
 
     Cluster::displayClusters(clusters);
     // for debug, displaying how points are sampled with lines
-    for(auto cluster : clusters) {
-        if(cluster.size() == 2) {
-            cluster.extractLineModel().display();
-        }
-    }
+//    for(auto cluster : clusters) {
+//        if(cluster.size() == 2) {
+//            cluster.extractLineModel().display();
+//        }
+//    }
 
     // compute PM
     auto pm = computePM(models, dataSet); // the PM *looks* ok
@@ -71,11 +70,18 @@ int main() {
         linkIndex++;
         linkable = link(clusters, dataSet, pm, models);
         clearWindow();
-        Cluster::displayClustersWithColors(clusters);
+//        Cluster::displayClustersWithColors(clusters);
     }
 
     // display model
-    validateBiggestCluster(clusters);
+//    Cluster::displayClusters(clusters);
+
+    validateNBiggestClusters(N_MODELS, clusters);
+    Cluster::displayClustersWithColors(clusters);
+//    Cluster::displayValidated(clusters);
+
+//    clearWindow();
+
 //    Cluster::displayClusters(clusters);
 
     std::cout << "Ending with " << clusters.size() << " clusters after " << linkIndex << " linkages." << std::endl;

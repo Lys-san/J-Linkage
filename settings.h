@@ -12,7 +12,7 @@
 
 #define EPSILON       0.1   // threshold for consensus set computing
 #define Z             1      // normalization constant
-#define SQUARED_SIGMA 2      // for random sampling
+#define SQUARED_SIGMA 0.01      // for random sampling
 
 #define COLOR_PACK {Imagine::RED,   \
                     Imagine::GREEN,    \
@@ -26,10 +26,11 @@
                     } // color pack for clusters display (9 colors)
 
 // adjust these parameters for testing
-#define N_INLIERS     40
-#define N_OUTLIERS    0
+#define N_MODELS      1
+#define N_INLIERS     40 // for a model
+#define N_OUTLIERS    10 // in general data set
 
-#define MAX_NOISE     0.0 // max value added to an inlier to ennoise the model (default : 0.01)
+#define MAX_NOISE     0.01 // max value added to an inlier to ennoise the model (default : 0.01)
 
 
 #define N_COLORS 9

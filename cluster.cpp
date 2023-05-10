@@ -119,12 +119,32 @@ void Cluster::displayClustersWithColors(const std::vector<Cluster> &clusters) {
     for(auto cluster:clusters) {
         i++;
         auto col = cols[i % N_COLORS];
-        std::cout << "[DEBUG] displaying cluster of size " << cluster.size() << " in " << col << std::endl;
+//        std::cout << "[DEBUG] displaying cluster of size " << cluster.size() << " in " << col << std::endl;
         for(auto point : cluster.points()) {
             point.display(col);
         }
     }
-    std::cout << "[DEBUG] I displayed " << i << " colored clusters. " << std::endl;
+}
+
+void Cluster::displayValidated(const std::vector<Cluster> &clusters) {
+
+    for(auto cluster : clusters) {
+        auto col = Imagine::RED;
+        if(cluster.isModel()) {
+            col = Imagine::GREEN;
+            std::cout << "VALID MODEL of size " << cluster.size() << std::endl;
+
+        }
+        int i = 0;
+        for(auto point : cluster.points()) {
+            if(col == Imagine::GREEN) {
+//                std::cout << i++ << std::endl;
+                point.display(col);
+
+
+            }
+        }
+    }
 }
 
 Line Cluster::extractLineModel() {
@@ -161,9 +181,6 @@ std::set<Line> Cluster::computePS(const std::set<Point> &dataSet, const std::map
 
 
         clustersPointsPS.emplace_back(ps);
-
-
-
     }
 
     // intersection
@@ -194,6 +211,15 @@ std::set<Line> Cluster::makeInter(const std::set<Line> &a, const std::set<Line> 
     }
     return inter;
 
+}
+
+bool Cluster::isModel() {
+    for(auto point : _points) {
+        if(!point.isInlier()) {
+            return false;
+        }
+    }
+    return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -302,7 +328,7 @@ bool link(std::vector<Cluster> &clusters,
             // compare indexes so we don't try to merge a cluster with itself
             double dist = i != j ? jaccard(ps1, ps2) : 1.;
 
-            std::cout << "DIST : " << dist << std::endl;
+//            std::cout << "DIST : " << dist << std::endl;
 
             if(dist < minDist) {
                 minDist = dist;
@@ -331,21 +357,30 @@ bool link(std::vector<Cluster> &clusters,
     return linkable;
 }
 
-void validateBiggestCluster(std::vector<Cluster> &clusters) {
+void validateNBiggestClusters(unsigned int n, std::vector<Cluster> &clusters) {
     assert(clusters.size() > 0);
+    std::set<Cluster> valids;
 
-    int n = 0;
+    int dataSetSize = 0;
 
-    Cluster &biggest = clusters[0];
-    for(auto cluster : clusters) {
-        n += cluster.size();
-        if(biggest.size() < cluster.size()) {
-            biggest = cluster;
+    for(int i = 0; i < n; i++) {
+        Cluster &biggest = clusters[i];
+
+        for(auto cluster : clusters) {
+            dataSetSize += cluster.size();
+            if(valids.find(cluster) != valids.end() && biggest.size() < cluster.size()) {
+                biggest = cluster;
+            }
         }
+        std::cout << "Found big cluster of size " << biggest.size() << std::endl;
+
+        valids.insert(biggest);
+        biggest.validate();
+
     }
+
 //    auto it = std::max_element(clusters.begin(), clusters.end());
-    std::cout << "Found big cluster of size " << biggest.size() << " and " << n - biggest.size() << " outliers." << std::endl;
-    biggest.validate();
+
 }
 
 std::vector<Line> extractModels(const std::vector<Cluster> &clusters) {
