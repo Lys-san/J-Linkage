@@ -28,6 +28,7 @@ Cluster::~Cluster() {}
 std::vector<Cluster> Cluster::sampleDataSet(const std::set<Point> &points) {
     auto dataSet = points;                 // copy data set points
     std::vector<Cluster> clusters; // our set of clusters
+    int col = 0;
 
     // building clusters until no more points in data set
     while(dataSet.size() > 0) {
@@ -117,12 +118,12 @@ void Cluster::displayClustersWithColors(const std::vector<Cluster> &clusters) {
     int i = 0;
 
     for(auto cluster:clusters) {
-        i++;
         auto col = cols[i % N_COLORS];
 //        std::cout << "[DEBUG] displaying cluster of size " << cluster.size() << " in " << col << std::endl;
         for(auto point : cluster.points()) {
             point.display(col);
         }
+        i++;
     }
 }
 

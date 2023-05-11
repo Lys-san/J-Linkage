@@ -33,6 +33,13 @@ int main() {
         dataSet.insert(inliers.begin(), inliers.end());
     }
 
+//    // FOR DEBUG, REMOVE AFTER
+//    for(auto point : dataSet) {
+//        point.display();
+//    }
+
+
+
     // cluster generation
     auto clusters = Cluster::sampleDataSet(dataSet);
     // extract models from sampled set
@@ -43,10 +50,11 @@ int main() {
     }
 
     Cluster::displayClusters(clusters);
-    // for debug, displaying how points are sampled with lines
+    // FOR DEBUG, displaying how points are sampled with lines
 //    for(auto cluster : clusters) {
 //        if(cluster.size() == 2) {
 //            cluster.extractLineModel().display();
+//            std::cout << "[DEBUG] : distance between sampled points : " << cluster.extractLineModel().squaredLength() << std::endl;
 //        }
 //    }
 
@@ -70,14 +78,14 @@ int main() {
         linkIndex++;
         linkable = link(clusters, dataSet, pm, models);
         clearWindow();
-//        Cluster::displayClustersWithColors(clusters);
+        Cluster::displayClustersWithColors(clusters);
     }
 
     // display model
 //    Cluster::displayClusters(clusters);
 
     validateNBiggestClusters(N_MODELS, clusters);
-    Cluster::displayClustersWithColors(clusters);
+//    Cluster::displayClustersWithColors(clusters);
 //    Cluster::displayValidated(clusters);
 
 //    clearWindow();

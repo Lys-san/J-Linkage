@@ -137,9 +137,11 @@ std::discrete_distribution<> Point::computeProbabilitiesFor(const std::set<Point
             tmp.emplace(0.);
         }
         else {
-            double p = (std::exp(squaredDistance(*this, point)/SQUARED_SIGMA))/Z;
+            double p = (std::exp(-squaredDistance(*this, point)/SQUARED_SIGMA))/Z;
             tmp.emplace(p);
-            std::cout << "probability : " << p << std::endl;
+            std::cout << "probability for point " << point << " : " << p << std::endl;
+            std::cout << "distance was " << squaredDistance(*this, point) << std::endl;
+
         }
     }
     std::cout << "--------" << std::endl;
