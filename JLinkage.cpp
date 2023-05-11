@@ -62,14 +62,19 @@ int main() {
     auto pm = computePM(models, dataSet); // the PM *looks* ok
     std::cout << "[DEBUG] Computed " << pm.size() << " preference sets" << std::endl;
     std::cout << "[DEBUG] Each PS considers " << pm[0].size() << " models" << std::endl;
-    std::cout << "-----------" << std::endl;
-    for(auto line : pm) {
-        for(auto value : line) {
-            std::cout << value << " ";
-        }
-        std::cout << std::endl;
-    }
-    std::cout << "-----------" << std::endl;
+
+    // uncomment for PM display
+//    std::cout << "-----------" << std::endl;
+//    for(auto line : pm) {
+//        for(auto value : line) {
+//            std::cout << value << " ";
+//        }
+//        std::cout << std::endl;
+//    }
+//    std::cout << "-----------" << std::endl;
+
+    std::cout << "[DEBUG] Linking clusters, please wait... " << std::endl;
+
 
     // link until model is found
     auto linkable = true;
@@ -78,15 +83,18 @@ int main() {
         linkIndex++;
         linkable = link(clusters, dataSet, pm, models);
         clearWindow();
-        Cluster::displayClustersWithColors(clusters);
+//        Cluster::displayClustersWithColors(clusters);
     }
 
     // display model
 //    Cluster::displayClusters(clusters);
+    clearWindow();
 
     validateNBiggestClusters(N_MODELS, clusters);
+    auto resWindow = Imagine::openWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "results", 330, 10);
+    Imagine::setActiveWindow(resWindow);
 //    Cluster::displayClustersWithColors(clusters);
-//    Cluster::displayValidated(clusters);
+    Cluster::displayValidated(clusters);
 
 //    clearWindow();
 

@@ -165,8 +165,8 @@ Point Cluster::extractPointModel() {
 }
 
 bool Cluster::operator<(const Cluster &other) const {
-    //return this->_points.size() < other._points.size();
-    return this->_points < other._points;
+    return this->_points.size() < other._points.size(); // if ever the algorithm has a weird behavior, comment this line and uncomment the next one
+//    return this->_points < other._points;
 }
 
 bool Cluster::operator==(const Cluster &other) const {
@@ -360,28 +360,12 @@ bool link(std::vector<Cluster> &clusters,
 
 void validateNBiggestClusters(unsigned int n, std::vector<Cluster> &clusters) {
     assert(clusters.size() > 0);
-    std::set<Cluster> valids;
 
-    int dataSetSize = 0;
-
+    std::sort(clusters.begin(), clusters.end());
+    std::reverse(clusters.begin(), clusters.end());
     for(int i = 0; i < n; i++) {
-        Cluster &biggest = clusters[i];
-
-        for(auto cluster : clusters) {
-            dataSetSize += cluster.size();
-            if(valids.find(cluster) != valids.end() && biggest.size() < cluster.size()) {
-                biggest = cluster;
-            }
-        }
-        std::cout << "Found big cluster of size " << biggest.size() << std::endl;
-
-        valids.insert(biggest);
-        biggest.validate();
-
+        clusters[i].validate();
     }
-
-//    auto it = std::max_element(clusters.begin(), clusters.end());
-
 }
 
 std::vector<Line> extractModels(const std::vector<Cluster> &clusters) {
