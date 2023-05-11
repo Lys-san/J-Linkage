@@ -26,6 +26,16 @@ Line::Line(const Line& other):
 
 }
 
+Line::Line(double a, double b):
+    _a {a},
+    _b {b} {
+    double x1 = b;
+    double x2 = a + b;
+    _p1 = Point(0., x1);
+    _p2 = Point(1., x2);
+
+}
+
 
 Line Line::randomlyGenerated() {
     Point p = Point::randomlyGeneratedOnYvalue(0.);
@@ -120,6 +130,57 @@ std::vector<bool> Line::computeBooleanConsensusSet(const std::set<Point> &dataSe
         }
     }
     return cs;
+}
+
+std::set<Point> Line::generateStarModel() {
+    Point p1 = Point(1./2, 0);
+    Point p2 = Point(0, 1./4);
+    Point p3 = Point(1., 1./4);
+    Point p4 = Point(1./5, 1.);
+    Point p5 = Point(4./5, 1.);
+
+    std::vector<Line> lines;
+
+    lines.emplace_back(Line(p1, p4));
+    lines.emplace_back(Line(p4, p3));
+    lines.emplace_back(Line(p3, p2));
+    lines.emplace_back(Line(p2, p5));
+    lines.emplace_back(Line(p5, p1));
+
+    std::cout<<"AA" << std::endl;
+
+    std::set<Point> inliers;
+
+    for(auto line : lines) {
+        std::cout << line << std::endl;
+        auto tmp = line.generateRandomInliers(N_INLIERS);
+        inliers.insert(tmp.begin(), tmp.end());
+    }
+
+    return inliers;
+
+
+
+
+
+}
+
+Line Line::leastSquares(const std::vector<Point> &points) {
+    double xSum = 0.;
+    double ySum = 0.;
+    double xySum = 0.;
+    double xSquaredSum = 0.;
+
+    for(auto point : points) {
+        xSum += point.x();
+        ySum += point.y();
+        xySum += point.x()*point.y();
+        xSquaredSum += pow(point.x(), 2);
+    }
+
+    double a = (xSum*ySum - points.size()*xySum)/(pow(xSum, 2) - points.size()*xSquaredSum);
+    double b = (xySum*xSum - xSquaredSum*ySum)/(pow(xSum, 2) - points.size()*xSquaredSum);
+    return Line(a, b);
 }
 
 

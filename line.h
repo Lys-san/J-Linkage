@@ -1,7 +1,7 @@
 /**
  * Author        : Lysandre M. (lysandre.macke@enpc.fr)
  * Created       : 04-27-2023
- * Last modified : 05-10-2023 */
+ * Last modified : 05-11-2023 */
 
 #ifndef LINE_H
 #define LINE_H
@@ -31,6 +31,8 @@ public:
     Line();
 
     Line(const Line& other);
+
+    Line(double a, double b);
 
     /**
      * Factory method that creates and returns a randomy generated
@@ -104,6 +106,19 @@ public:
     /** Computes and returns the consensus set (vector of booleans) according to the
      *  given data set. */
     std::vector<bool> computeBooleanConsensusSet(const std::set<Point> &dataSet);
+
+    /**
+     * Returns a set of points representing a star model.
+     */
+    static std::set<Point> generateStarModel();
+
+    /**
+     * Find line with least square method.
+     *
+     * @param points
+     * @return
+     */
+    static Line leastSquares(const std::vector<Point> &points);
 
 
 private:

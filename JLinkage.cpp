@@ -33,6 +33,11 @@ int main() {
         dataSet.insert(inliers.begin(), inliers.end());
     }
 
+//    auto inliers = Line::generateStarModel();
+//    dataSet.insert(inliers.begin(), inliers.end());
+
+    std::cout << dataSet.size() << std::endl;
+
 //    // FOR DEBUG, REMOVE AFTER
 //    for(auto point : dataSet) {
 //        point.display();
@@ -45,9 +50,9 @@ int main() {
     // extract models from sampled set
     auto models = extractModels(clusters);
     std::cout << "[DEBUG] Extracted " << models.size() << " models :" << std::endl;
-    for(auto model : models) {
-        std::cout << model << std::endl;
-    }
+//    for(auto model : models) {
+//        std::cout << model << std::endl;
+//    }
 
     Cluster::displayClusters(clusters);
     // FOR DEBUG, displaying how points are sampled with lines
@@ -82,23 +87,15 @@ int main() {
     while(linkable) {
         linkIndex++;
         linkable = link(clusters, dataSet, pm, models);
-        clearWindow();
 //        Cluster::displayClustersWithColors(clusters);
     }
 
-    // display model
-//    Cluster::displayClusters(clusters);
-    clearWindow();
-
+    // display models
     validateNBiggestClusters(N_MODELS, clusters);
     auto resWindow = Imagine::openWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "results", 330, 10);
     Imagine::setActiveWindow(resWindow);
-//    Cluster::displayClustersWithColors(clusters);
     Cluster::displayValidated(clusters);
-
-//    clearWindow();
-
-//    Cluster::displayClusters(clusters);
+    Cluster::displayModels(clusters);
 
     std::cout << "Ending with " << clusters.size() << " clusters after " << linkIndex << " linkages." << std::endl;
 

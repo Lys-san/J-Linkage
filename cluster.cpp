@@ -128,22 +128,25 @@ void Cluster::displayClustersWithColors(const std::vector<Cluster> &clusters) {
 }
 
 void Cluster::displayValidated(const std::vector<Cluster> &clusters) {
-
     for(auto cluster : clusters) {
-        auto col = Imagine::RED;
         if(cluster.isModel()) {
-            col = Imagine::GREEN;
             std::cout << "VALID MODEL of size " << cluster.size() << std::endl;
-
-        }
-        int i = 0;
-        for(auto point : cluster.points()) {
-            if(col == Imagine::GREEN) {
-//                std::cout << i++ << std::endl;
-                point.display(col);
-
+            for(auto point : cluster.points()) {
+                    point.display();
 
             }
+
+        }
+
+    }
+}
+
+void Cluster::displayModels(const std::vector<Cluster> &clusters) {
+    for(auto cluster : clusters) {
+        if(cluster.isModel()) {
+            auto model = Line::leastSquares(cluster._points);
+            std::cout << model << std::endl;
+            model.display();
         }
     }
 }

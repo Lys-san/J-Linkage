@@ -24,9 +24,9 @@
                     } // color pack for clusters display (7 colors)
 
 // adjust these parameters for testing
-#define N_MODELS      3
+#define N_MODELS      5
 #define N_INLIERS     50 // for a model
-#define N_OUTLIERS    50 // in general data set
+#define N_OUTLIERS    100 // in general data set
 
 #define MAX_NOISE     0.005 // max value added to an inlier to ennoise the model (default : 0.01)
 

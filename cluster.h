@@ -90,6 +90,12 @@ public:
      */
     static void displayValidated(const std::vector<Cluster> &clusters);
 
+    /**
+     * @brief displayModels
+     * @param clusters
+     */
+    static void displayModels(const std::vector<Cluster> &clusters);
+
     // TODO : redo this funcion for generic ModelType model insead of Line
     Line extractLineModel();
 

@@ -18,7 +18,7 @@
 
 #define POINT_RADIUS         1
 #define OUTLIER_COLOR        Imagine::BLACK
-#define INLIER_COLOR         Imagine::GREEN
+#define INLIER_COLOR         Imagine::RED
 #define POINT_COLOR          isInlier() ? INLIER_COLOR : OUTLIER_COLOR
 #define MAX_POINTS_ON_SCREEN 2048
 
