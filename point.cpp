@@ -111,25 +111,7 @@ void Point::addNoise() {
 }
 
 
-//std::map<Point, double> Point::computeProbabilitiesFor(const std::set<Point> &points) {
-//    std::map<Point, double> probabilities;
-
-//    for(auto point : points) {
-//        if(*this == point) {
-//            probabilities.emplace(std::make_pair(point, 0.));
-//        }
-//        else {
-//            double p = (std::exp(squaredDistance(*this, point)/SQUARED_SIGMA))/Z;
-//            probabilities.emplace(std::make_pair(point, p));
-//        }
-//    }
-
-//    return probabilities;
-//}
-
 std::discrete_distribution<> Point::computeProbabilitiesFor(const std::set<Point> &points) {
-//    std::cout << "--------" << std::endl;
-
     std::set<double> tmp;
 
     for(auto point : points) {
@@ -139,12 +121,8 @@ std::discrete_distribution<> Point::computeProbabilitiesFor(const std::set<Point
         else {
             double p = (std::exp(-squaredDistance(*this, point)/SQUARED_SIGMA))/Z;
             tmp.emplace(p);
-//            std::cout << "probability for point " << point << " : " << p << std::endl;
-//            std::cout << "distance was " << squaredDistance(*this, point) << std::endl;
-
         }
     }
-//    std::cout << "--------" << std::endl;
 
     std::discrete_distribution<> probabilities(tmp.begin(), tmp.end());
     return probabilities;

@@ -16,7 +16,6 @@ Cluster::Cluster(Point p) {
 
 
 Cluster::Cluster(const std::set<Point> &points) {
-//    _points.insert(points.begin(), points.end());
     for(auto point : points) {
         _points.emplace_back(point);
     }
@@ -168,8 +167,7 @@ Point Cluster::extractPointModel() {
 }
 
 bool Cluster::operator<(const Cluster &other) const {
-    return this->_points.size() < other._points.size(); // if ever the algorithm has a weird behavior, comment this line and uncomment the next one
-//    return this->_points < other._points;
+    return this->_points.size() < other._points.size();
 }
 
 bool Cluster::operator==(const Cluster &other) const {
@@ -269,17 +267,6 @@ std::map<Point, std::set<Line>> extractPSfromPM(const std::set<Point> &dataSet, 
         pointIndex++;
         preferenceSets.emplace(std::make_pair(*pointIterator, ps));
     }
-//    std::cout << "[DEBUG] computed preference sets : " << std::endl;
-//    for(auto ps : preferenceSets) {
-//        auto p = ps.first;
-//        std::cout << "for point " << p << std::endl;
-
-//        for(auto model : ps.second) {
-//            std::cout << model << std::endl;
-//        }
-//        std::cout << std::endl;
-//    }
-
     return preferenceSets;
 }
 
@@ -295,8 +282,6 @@ std::vector<std::vector<bool>> transposatePM(const std::vector<std::vector<bool>
 
 double jaccard(std::set<Line> a, std::set<Line> b) {
     std::set<Line> u; // union
-//    u.insert(a.begin(), a.end()); // construction the union is a waste, we only need its size
-//    u.insert(b.begin(), b.end());
 
     double u_size = a.size() + b.size();
 
@@ -331,8 +316,6 @@ bool link(std::vector<Cluster> &clusters,
 
             // compare indexes so we don't try to merge a cluster with itself
             double dist = i != j ? jaccard(ps1, ps2) : 1.;
-
-//            std::cout << "DIST : " << dist << std::endl;
 
             if(dist < minDist) {
                 minDist = dist;

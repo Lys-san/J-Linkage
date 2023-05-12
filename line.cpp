@@ -192,14 +192,18 @@ Point Line::randomPoint() {
     }
 
     double x = Point::randomCoordinate();
-//    double min = -_b/_a;
+    double y = _a*x + _b;
+
+    double min = -_b/_a;
+    double max = (1. - _b)/_a;
 
     // to guaranty that the selectionned point is in [0, 1]²
-    // code better later
-    while(_a*x + _b < 0 || _a*x + _b > 1) {
-        x = Point::randomCoordinate();
+    if(y < 0 || y > 1) {
+        x *= max - min;
+        x += min;
+        y = _a*x + _b;
     }
-    return Point(x, _a*x + _b);
+    return Point(x, y);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -215,10 +219,4 @@ double distance(Line line, Point point) {
     double num = std::abs(a*x -y + b);
     double den = std::sqrt(a*a + 1);
     return num/den;
-}
-
-std::vector<bool> computePreferenceSetFor(const Point &point, const std::set<Line> &modelSet) {
-    std::vector<bool> ps;
-    // TODO
-    return ps;
 }

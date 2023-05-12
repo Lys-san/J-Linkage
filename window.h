@@ -1,7 +1,7 @@
 /**
  * Author        : Lysandre M. (lysandre.macke@enpc.fr)
  * Created       : 04-27-2023
- * Last modified : 05-05-2023 */
+ * Last modified : 05-11-2023 */
 
 #ifndef WINDOW_H
 #define WINDOW_H

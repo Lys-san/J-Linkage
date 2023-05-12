@@ -1,7 +1,7 @@
 /** 
  * Author        : Lysandre M. (lysandre.macke@enpc.fr)
  * Created       : 04-26-2023
- * Last modified : 05-05-2023
+ * Last modified : 05-12-2023
  * 
  * Implementation of the J-linkage algorithm for multi-model estimation.
  * Using the Imagine++ library.
@@ -10,6 +10,7 @@
  * Estimation with J-linkage'. */
 
 #include <iostream>
+#include <chrono>
 #include "point.h"
 #include "line.h"
 #include "cluster.h"
@@ -20,9 +21,7 @@ int main() {
     Imagine::openWindow(WINDOW_WIDTH, WINDOW_HEIGHT);
 
     // seed initialization
-    srand((unsigned int)time(0)); // uncomment this line after debugging
-//    srand(0); // for debug
-
+    srand((unsigned int)time(0));
 
     // random point generation
     auto dataSet = Point::generateRandomDataSetOfSize(N_OUTLIERS);
@@ -33,51 +32,26 @@ int main() {
         dataSet.insert(inliers.begin(), inliers.end());
     }
 
+
+
+    // uncomment following lines for star model
 //    auto inliers = Line::generateStarModel();
 //    dataSet.insert(inliers.begin(), inliers.end());
-
-    std::cout << dataSet.size() << std::endl;
-
-//    // FOR DEBUG, REMOVE AFTER
-//    for(auto point : dataSet) {
-//        point.display();
-//    }
-
-
 
     // cluster generation
     auto clusters = Cluster::sampleDataSet(dataSet);
     // extract models from sampled set
     auto models = extractModels(clusters);
     std::cout << "[DEBUG] Extracted " << models.size() << " models :" << std::endl;
-//    for(auto model : models) {
-//        std::cout << model << std::endl;
-//    }
 
     Cluster::displayClusters(clusters);
-    // FOR DEBUG, displaying how points are sampled with lines
-//    for(auto cluster : clusters) {
-//        if(cluster.size() == 2) {
-//            cluster.extractLineModel().display();
-//            std::cout << "[DEBUG] : distance between sampled points : " << cluster.extractLineModel().squaredLength() << std::endl;
-//        }
-//    }
 
+    // START ALGORITHM
+    auto start = chrono::steady_clock::now();
     // compute PM
     auto pm = computePM(models, dataSet); // the PM *looks* ok
     std::cout << "[DEBUG] Computed " << pm.size() << " preference sets" << std::endl;
     std::cout << "[DEBUG] Each PS considers " << pm[0].size() << " models" << std::endl;
-
-    // uncomment for PM display
-//    std::cout << "-----------" << std::endl;
-//    for(auto line : pm) {
-//        for(auto value : line) {
-//            std::cout << value << " ";
-//        }
-//        std::cout << std::endl;
-//    }
-//    std::cout << "-----------" << std::endl;
-
     std::cout << "[DEBUG] Linking clusters, please wait... " << std::endl;
 
 
@@ -89,16 +63,17 @@ int main() {
         linkable = link(clusters, dataSet, pm, models);
 //        Cluster::displayClustersWithColors(clusters);
     }
+    auto end = chrono::steady_clock::now();
 
     // display models
     validateNBiggestClusters(N_MODELS, clusters);
-    auto resWindow = Imagine::openWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "results", 330, 10);
+    auto resWindow = Imagine::openWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "results", WINDOW_WIDTH, 10);
     Imagine::setActiveWindow(resWindow);
     Cluster::displayValidated(clusters);
     Cluster::displayModels(clusters);
 
     std::cout << "Ending with " << clusters.size() << " clusters after " << linkIndex << " linkages." << std::endl;
-
+    cout << "Time took : " << chrono::duration_cast<chrono::milliseconds>(end - start).count() << " ms" << std::endl;
     Imagine::endGraphics();
     return 0;
 }
