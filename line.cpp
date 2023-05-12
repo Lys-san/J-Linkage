@@ -194,15 +194,16 @@ Point Line::randomPoint() {
     double x = Point::randomCoordinate();
     double y = _a*x + _b;
 
-    double min = -_b/_a;
-    double max = (1. - _b)/_a;
-
     // to guaranty that the selectionned point is in [0, 1]²
     if(y < 0 || y > 1) {
+        double min = -_b/_a;
+        double max = (1. - _b)/_a;
+
         x *= max - min;
         x += min;
         y = _a*x + _b;
     }
+
     return Point(x, y);
 }
 

@@ -1,7 +1,7 @@
 /**
  * Author        : Lysandre M. (lysandre.macke@enpc.fr)
  * Created       : 04-27-2023
- * Last modified : 05-11-2023 */
+ * Last modified : 05-12-2023 */
 
 #ifndef CLUSTER_H
 #define CLUSTER_H
@@ -194,8 +194,11 @@ bool link(
         const std::vector<Line> &models
         );
 
-/** Validates the biggest clusters contained in the given vector. */
+/** (DEPRECATED) Validates the n biggest clusters contained in the given vector. */
 void validateNBiggestClusters(unsigned int n, std::vector<Cluster> &clusters);
+
+/** Validates the biggest clusters contained in the given vector. */
+void validateBiggestClusters(std::vector<Cluster> &clusters);
 
 /**
  * Extract models from clusters, asserting that cluster contains the number of points required

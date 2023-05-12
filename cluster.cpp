@@ -354,6 +354,31 @@ void validateNBiggestClusters(unsigned int n, std::vector<Cluster> &clusters) {
     }
 }
 
+void validateBiggestClusters(std::vector<Cluster> &clusters) {
+    assert(clusters.size() > 0);
+
+    std::sort(clusters.begin(), clusters.end());
+    std::reverse(clusters.begin(), clusters.end());
+
+    std::vector<int> sizes;
+
+    for(auto cluster : clusters) {
+        sizes.emplace_back(cluster.size());
+    }
+
+    std::vector<int> diff;
+    std::adjacent_difference(sizes.begin(), sizes.end(), sizes.begin());
+    std::transform(sizes.begin(), sizes.end(), sizes.begin(), [](int s) {return s > 0 ? s : -s;});
+
+    auto it = std::max_element(sizes.begin() + 1, sizes.end());
+    auto index = std::distance(sizes.begin(), it);
+
+    for(int i = 0; i < index; i++) {
+        clusters[i].validate();
+    }
+}
+
+
 std::vector<Line> extractModels(const std::vector<Cluster> &clusters) {
     std::vector<Line> models;
     for(auto cluster : clusters) {
