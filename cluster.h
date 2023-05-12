@@ -11,12 +11,12 @@
 
 #include "point.h"
 #include "model.h"
-#include "line.h" // this will be deleted in final version of the code
+#include "line.h"
 #include "util.h"
 
 
 /** Represents a cluster of points, which can eventually be view as a model hypothesis.
- *  A cluster is a set of points from the 2D space. */
+ *  A cluster is a vector of points from the 2D space. */
 class Cluster {
 public:
     /** Constructors */
@@ -31,14 +31,16 @@ public:
     /** Destructor */
     ~Cluster();
 
-    /** Factory method that generates M clusters from the given data set. */
+    /** Factory method that generates N/2 clusters from the given data set. */
     static std::vector<Cluster> sampleDataSet(const std::set<Point> &points);
+
 
     /** Stream operator << redefinition. */
     friend std::ostream &operator<<(std::ostream &out, Cluster &cluster);
 
     /**
      * < operator redefinition for Cluster objects.
+     * Cluster objects are compared with their size.
      *
      * @param other the comparing cluster.
      * @return true if the current cluster is < than the other.
@@ -47,9 +49,10 @@ public:
 
     /**
      * == operator redefinition for Cluster objects.
+     * 2 clusters are equals if their points (vectors) are equals.
      *
-     * @param other
-     * @return
+     * @param other cluster to compare to
+     * @return true if the clusters are ==.
      */
     bool operator==(const Cluster &other) const;
 
@@ -96,7 +99,10 @@ public:
      */
     static void displayModels(const std::vector<Cluster> &clusters);
 
-    // TODO : redo this funcion for generic ModelType model insead of Line
+    /**
+     * Creates a line for clusters of size 2.
+     * @return Line object
+     */
     Line extractLineModel();
 
     Point extractPointModel();

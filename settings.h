@@ -26,7 +26,7 @@
                     } // color pack for clusters display (7 colors)
 
 // adjust these parameters for testing
-#define N_MODELS      2   // nuber of models
+#define N_MODELS      5   // nuber of models
 #define N_INLIERS     50 // inliers for 1 model
 #define N_OUTLIERS    50 // in general data set
 

@@ -12,6 +12,19 @@ This program is coded using C++, its compilation requires :
 
 Build Makefile with `cmake CMakeLists.txt`, and then the executable with `make`. 
 
-At this current state of development the program isn't ready for external usage.
+
+### main files
+
+The main files of this programm are `JLinkage.cpp` and `settings.h`. 
+
+`JLinkage.cpp` contains the main function with JLinkage algorithm.
+
+`settings.h` defines the global parameters to use for testing (threshold, number of inliers/outliers etc...)
+
+Other files define classes and functions used in `JLinkage.cpp`.
+
+
+
+
 
 For any information, please contact me at lysandre.macke@enpc.fr

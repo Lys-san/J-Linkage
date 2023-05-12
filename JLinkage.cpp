@@ -32,24 +32,18 @@ int main() {
         dataSet.insert(inliers.begin(), inliers.end());
     }
 
-
-
-    // uncomment following lines for star model
-//    auto inliers = Line::generateStarModel();
-//    dataSet.insert(inliers.begin(), inliers.end());
-
     // cluster generation
     auto clusters = Cluster::sampleDataSet(dataSet);
     // extract models from sampled set
     auto models = extractModels(clusters);
-    std::cout << "[DEBUG] Extracted " << models.size() << " models :" << std::endl;
+    std::cout << "[DEBUG] Extracted " << models.size() << " models" << std::endl;
 
     Cluster::displayClusters(clusters);
 
     // START ALGORITHM
     auto start = chrono::steady_clock::now();
-    // compute PM
-    auto pm = computePM(models, dataSet); // the PM *looks* ok
+    // compute PM once
+    auto pm = computePM(models, dataSet);
     std::cout << "[DEBUG] Computed " << pm.size() << " preference sets" << std::endl;
     std::cout << "[DEBUG] Each PS considers " << pm[0].size() << " models" << std::endl;
     std::cout << "[DEBUG] Linking clusters, please wait... " << std::endl;
@@ -61,12 +55,10 @@ int main() {
     while(linkable) {
         linkIndex++;
         linkable = link(clusters, dataSet, pm, models);
-//        Cluster::displayClustersWithColors(clusters);
     }
     auto end = chrono::steady_clock::now();
 
     // display models
-//    validateNBiggestClusters(N_MODELS, clusters);
     validateBiggestClusters(clusters);
 
     auto resWindow = Imagine::openWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "results", WINDOW_WIDTH, 10);
@@ -74,7 +66,7 @@ int main() {
     Cluster::displayValidated(clusters);
     Cluster::displayModels(clusters);
 
-    std::cout << "Ending with " << clusters.size() << " clusters after " << linkIndex << " linkages." << std::endl;
+    std::cout << "[DEBUG] Ending with " << clusters.size() << " clusters after " << linkIndex << " linkages." << std::endl;
     cout << "Time took : " << chrono::duration_cast<chrono::milliseconds>(end - start).count() << " ms" << std::endl;
     Imagine::endGraphics();
     return 0;

@@ -125,7 +125,7 @@ private:
     // private methods
 
     /** Returns a randomly selected point from the current line.
-     * Guaranties that the returned point is in [0, 1]x[0, 1]. */
+     *  Guaranties that the returned point is in [0, 1]x[0, 1]. */
     Point randomPoint();
 
     // attributes

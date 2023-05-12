@@ -10,7 +10,7 @@ Cluster::Cluster(const Cluster& other) {
 }
 
 Cluster::Cluster(Point p) {
-    //_points.insert(p);
+    _points.emplace_back(p);
 }
 
 
@@ -25,7 +25,7 @@ Cluster::~Cluster() {}
 
 
 std::vector<Cluster> Cluster::sampleDataSet(const std::set<Point> &points) {
-    auto dataSet = points;                 // copy data set points
+    auto dataSet = points;         // copy data set points
     std::vector<Cluster> clusters; // our set of clusters
     int col = 0;
 
@@ -41,29 +41,27 @@ std::vector<Cluster> Cluster::sampleDataSet(const std::set<Point> &points) {
         clusterPoints.emplace(p);
         dataSet.erase(it);
 
-        // TODO : assert that MMSS is <= points.size()
-        for(int i = 0; i < std::min(1UL, dataSet.size()); i++) { // TODO : adjust loop acording to ModelType MMSS
+        for(int i = 0; i < std::min(1UL, dataSet.size()); i++) {
             // computing probability according to last selected point
-            std::discrete_distribution<> d = p.computeProbabilitiesFor(dataSet);
-            std::random_device rd;
-            std::mt19937 gen(rd());
+//            std::discrete_distribution<> d = p.computeProbabilitiesFor(dataSet);
+//            std::random_device rd;
+//            std::mt19937 gen(rd());
 
+//            int point_index = d(gen);
 
-
-            int point_index = d(gen);
+            // what if second point is chosen uniformly ?
+            int point_index = std::rand() % dataSet.size();
 
             it = dataSet.begin();
             std::advance(it, point_index);
             p = *it;
+
             clusterPoints.emplace(p);
             dataSet.erase(it);
         }
 
-
         auto cluster = Cluster(clusterPoints);
         clusters.emplace_back(cluster);
-
-
     }
     std::cout<< "[DEBUG] End of random sampling. Generated "
              << clusters.size()  << " clusters for total data of size  : " << points.size() << std::endl;
@@ -98,8 +96,6 @@ void Cluster::invalidate() {
     }
 }
 
-
-
 int Cluster::size() {
     return _points.size();
 }
@@ -118,7 +114,6 @@ void Cluster::displayClustersWithColors(const std::vector<Cluster> &clusters) {
 
     for(auto cluster:clusters) {
         auto col = cols[i % N_COLORS];
-//        std::cout << "[DEBUG] displaying cluster of size " << cluster.size() << " in " << col << std::endl;
         for(auto point : cluster.points()) {
             point.display(col);
         }
@@ -129,14 +124,12 @@ void Cluster::displayClustersWithColors(const std::vector<Cluster> &clusters) {
 void Cluster::displayValidated(const std::vector<Cluster> &clusters) {
     for(auto cluster : clusters) {
         if(cluster.isModel()) {
-            std::cout << "VALID MODEL of size " << cluster.size() << std::endl;
+            std::cout << "[DEBUG] VALID MODEL of size " << cluster.size() << std::endl;
             for(auto point : cluster.points()) {
                     point.display();
 
             }
-
         }
-
     }
 }
 
@@ -144,7 +137,6 @@ void Cluster::displayModels(const std::vector<Cluster> &clusters) {
     for(auto cluster : clusters) {
         if(cluster.isModel()) {
             auto model = Line::leastSquares(cluster._points);
-            std::cout << model << std::endl;
             model.display();
         }
     }
@@ -153,13 +145,7 @@ void Cluster::displayModels(const std::vector<Cluster> &clusters) {
 Line Cluster::extractLineModel() {
     assert(size() == 2);
 
-    // TODO : recode this part better
-    Point p[2];
-    int i = 0;
-    for(auto point : points()) {
-        p[i++] = point;
-    }
-    return Line(p[0], p[1]);
+    return Line(_points[0], _points[1]);
 }
 
 Point Cluster::extractPointModel() {
@@ -179,8 +165,6 @@ std::set<Line> Cluster::computePS(const std::set<Point> &dataSet, const std::map
 
     for(auto point : _points) {
         auto ps = preferenceSets.at(point);
-
-
 
         clustersPointsPS.emplace_back(ps);
     }
