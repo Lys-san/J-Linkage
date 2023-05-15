@@ -24,10 +24,9 @@ Cluster::Cluster(const std::set<Point> &points) {
 Cluster::~Cluster() {}
 
 
-std::vector<Cluster> Cluster::sampleDataSet(const std::set<Point> &points) {
+std::vector<Cluster> Cluster::clusterizePairs(const std::set<Point> &points) {
     auto dataSet = points;         // copy data set points
     std::vector<Cluster> clusters; // our set of clusters
-    int col = 0;
 
     // building clusters until no more points in data set
     while(dataSet.size() > 0) {
@@ -41,16 +40,17 @@ std::vector<Cluster> Cluster::sampleDataSet(const std::set<Point> &points) {
         clusterPoints.emplace(p);
         dataSet.erase(it);
 
-        for(int i = 0; i < std::min(1UL, dataSet.size()); i++) {
-            // computing probability according to last selected point
-//            std::discrete_distribution<> d = p.computeProbabilitiesFor(dataSet);
-//            std::random_device rd;
-//            std::mt19937 gen(rd());
 
-//            int point_index = d(gen);
+        for(int i = 0; i < std::min(1UL, dataSet.size()); i++) { // change 1UL value if want to make bigger clusters
+            // computing probability according to last selected point
+            std::discrete_distribution<> d = p.computeProbabilitiesFor(dataSet);
+            std::random_device rd;
+            std::mt19937 gen(rd());
+
+            int point_index = d(gen);
 
             // what if second point is chosen uniformly ?
-            int point_index = std::rand() % dataSet.size();
+//            int point_index = std::rand() % dataSet.size();
 
             it = dataSet.begin();
             std::advance(it, point_index);
@@ -66,6 +66,17 @@ std::vector<Cluster> Cluster::sampleDataSet(const std::set<Point> &points) {
     std::cout<< "[DEBUG] End of random sampling. Generated "
              << clusters.size()  << " clusters for total data of size  : " << points.size() << std::endl;
     return clusters;
+}
+
+std::vector<Cluster> Cluster::clusterize(const std::set<Point> &points) {
+    std::vector<Cluster> clusters;
+
+    for(auto point : points) {
+        clusters.emplace_back(Cluster(point));
+    }
+
+    return clusters;
+
 }
 
 std::ostream &operator<<(std::ostream &out, Cluster &cluster) {
@@ -359,6 +370,21 @@ void validateBiggestClusters(std::vector<Cluster> &clusters) {
 
     for(int i = 0; i < index; i++) {
         clusters[i].validate();
+    }
+}
+
+void validateBiggestClusters_2(std::vector<Cluster> &clusters, int dataSetSize) {
+    assert(clusters.size() > 0);
+
+    int minSize = 0.10 * dataSetSize;
+    std::cout << minSize << std::endl;
+
+
+    for(Cluster &cluster : clusters) {
+        if(cluster.size() > minSize) {
+            cluster.validate();
+        }
+
     }
 }
 

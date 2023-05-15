@@ -1,7 +1,7 @@
 /**
  * Author        : Lysandre M. (lysandre.macke@enpc.fr)
  * Created       : 04-27-2023
- * Last modified : 05-12-2023 */
+ * Last modified : 05-15-2023 */
 
 #ifndef CLUSTER_H
 #define CLUSTER_H
@@ -32,7 +32,11 @@ public:
     ~Cluster();
 
     /** Factory method that generates N/2 clusters from the given data set. */
-    static std::vector<Cluster> sampleDataSet(const std::set<Point> &points);
+    static std::vector<Cluster> clusterizePairs(const std::set<Point> &points);
+
+    /** Factory method that generates N singleton clusters from a data set
+     *  of size N */
+    static std::vector<Cluster> clusterize(const std::set<Point> &points);
 
 
     /** Stream operator << redefinition. */
@@ -126,7 +130,7 @@ public:
                                        const std::set<Line> &b
                                        );
     /**
-     * @return true if contains a minimum number of points.
+     * @return true if all points were validated.
      */
     bool isModel();
 
@@ -203,8 +207,14 @@ bool link(
 /** (DEPRECATED) Validates the n biggest clusters contained in the given vector. */
 void validateNBiggestClusters(unsigned int n, std::vector<Cluster> &clusters);
 
-/** Validates the biggest clusters contained in the given vector. */
+/** Validates the biggest clusters contained in the given vector.
+  * A cluster is valid if its size is big enough compared to other clusters size. */
 void validateBiggestClusters(std::vector<Cluster> &clusters);
+
+/** Validaes the biggest clusters contained in the given vector according to the dataSet size.
+ *  A cluster is valid if its size is > minSize. */
+void validateBiggestClusters_2(std::vector<Cluster> &clusters, int dataSetSize);
+
 
 /**
  * Extract models from clusters, asserting that cluster contains the number of points required

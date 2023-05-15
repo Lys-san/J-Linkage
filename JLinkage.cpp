@@ -27,16 +27,21 @@ int main() {
     auto dataSet = Point::generateRandomDataSetOfSize(N_OUTLIERS);
 
     // models with noise
-    for(auto i = 0; i < N_MODELS; i++) {
-        auto inliers = Line::randomlyGenerated().generateRandomInliers(N_INLIERS);
-        dataSet.insert(inliers.begin(), inliers.end());
-    }
+//    for(auto i = 0; i < N_MODELS; i++) {
+//        auto inliers = Line::randomlyGenerated().generateRandomInliers(N_INLIERS);
+//        dataSet.insert(inliers.begin(), inliers.end());
+//    }
+
+    auto inliers = Line::generateStarModel();
+    dataSet.insert(inliers.begin(), inliers.end());
 
     // cluster generation
-    auto clusters = Cluster::sampleDataSet(dataSet);
-    // extract models from sampled set
+    auto clusters = Cluster::clusterizePairs(dataSet);
+    // extract models from clusterized set
     auto models = extractModels(clusters);
     std::cout << "[DEBUG] Extracted " << models.size() << " models" << std::endl;
+//    auto clusters = Cluster::clusterize(dataSet); // last version : clusters = modelClusters
+//    auto clusters = modelClusters;
 
     Cluster::displayClusters(clusters);
 
@@ -59,7 +64,10 @@ int main() {
     auto end = chrono::steady_clock::now();
 
     // display models
-    validateBiggestClusters(clusters);
+    validateNBiggestClusters(N_MODELS, clusters);
+//    validateBiggestClusters_2(clusters, dataSet.size());
+
+//    validateBiggestClusters(clusters);
 
     auto resWindow = Imagine::openWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "results", WINDOW_WIDTH, 10);
     Imagine::setActiveWindow(resWindow);

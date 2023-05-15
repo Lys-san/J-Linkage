@@ -10,7 +10,7 @@
 
 
 
-#define EPSILON       0.01       // threshold for consensus set computing
+#define EPSILON       0.03       // threshold for consensus set computing
 #define Z             1          // normalization constant (in fact, we can keep it to 1)
 #define SQUARED_SIGMA 0.001      // for random sampling
 #define MAX_NOISE     0.005      // max value added to an inlier to ennoise the model (default : 0.01)

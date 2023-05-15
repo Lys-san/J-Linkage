@@ -147,8 +147,6 @@ std::set<Point> Line::generateStarModel() {
     lines.emplace_back(Line(p2, p5));
     lines.emplace_back(Line(p5, p1));
 
-    std::cout<<"AA" << std::endl;
-
     std::set<Point> inliers;
 
     for(auto line : lines) {
@@ -158,11 +156,6 @@ std::set<Point> Line::generateStarModel() {
     }
 
     return inliers;
-
-
-
-
-
 }
 
 Line Line::leastSquares(const std::vector<Point> &points) {
