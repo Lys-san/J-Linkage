@@ -172,6 +172,8 @@ bool Cluster::operator==(const Cluster &other) const {
 }
 
 std::set<Line> Cluster::computePS(const std::set<Point> &dataSet, const std::map<Point, std::set<Line>> &preferenceSets) {
+    auto start = std::chrono::steady_clock::now();
+
     std::vector<std::set<Line>> clustersPointsPS;
 
     for(auto point : _points) {
@@ -191,6 +193,8 @@ std::set<Line> Cluster::computePS(const std::set<Point> &dataSet, const std::map
         inter.insert(res.begin(), res.end());
     }
 
+    auto end = std::chrono::steady_clock::now();
+//    std::cout << "PF : " << std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count() << " ns" << std::endl;
     return inter;
 }
 
@@ -276,12 +280,17 @@ std::vector<std::vector<bool>> transposatePM(const std::vector<std::vector<bool>
 }
 
 double jaccard(std::set<Line> a, std::set<Line> b) {
+    auto start = std::chrono::steady_clock::now();
+
     std::set<Line> u; // union
 
     double u_size = a.size() + b.size();
 
     std::set<Line> n; // intersection
     n = Cluster::makeInter(a, b);
+
+    auto end = std::chrono::steady_clock::now();
+//    std::cout << "Jaccard : " << std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count() << " ns" << std::endl;
 
     return (u_size - n.size())/u_size;
 }
@@ -352,14 +361,25 @@ void validateNBiggestClusters(unsigned int n, std::vector<Cluster> &clusters) {
 void validateBiggestClusters(std::vector<Cluster> &clusters) {
     assert(clusters.size() > 0);
 
+
+
     std::sort(clusters.begin(), clusters.end());
     std::reverse(clusters.begin(), clusters.end());
+
+    std::cout << "cluster list : " << std::endl;
+    for(auto cluster : clusters) {
+        std::cout << cluster.size() << " ";
+    }
+    std::cout << std::endl;
+
 
     std::vector<int> sizes;
 
     for(auto cluster : clusters) {
         sizes.emplace_back(cluster.size());
     }
+    // add dummy cluster to cater for outliers-ree case
+    sizes.emplace_back(1);
 
     std::vector<int> diff;
     std::adjacent_difference(sizes.begin(), sizes.end(), sizes.begin());

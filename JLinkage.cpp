@@ -1,7 +1,7 @@
 /** 
  * Author        : Lysandre M. (lysandre.macke@enpc.fr)
  * Created       : 04-26-2023
- * Last modified : 05-12-2023
+ * Last modified : 05-23-2023
  * 
  * Implementation of the J-linkage algorithm for multi-model estimation.
  * Using the Imagine++ library.
@@ -36,12 +36,14 @@ int main() {
     dataSet.insert(inliers.begin(), inliers.end());
 
     // cluster generation
-    auto clusters = Cluster::clusterizePairs(dataSet);
+    auto modelClusters = Cluster::clusterizePairs(dataSet);
     // extract models from clusterized set
-    auto models = extractModels(clusters);
+    auto models = extractModels(modelClusters);
     std::cout << "[DEBUG] Extracted " << models.size() << " models" << std::endl;
-//    auto clusters = Cluster::clusterize(dataSet); // last version : clusters = modelClusters
-//    auto clusters = modelClusters;
+    auto clusters = Cluster::clusterize(dataSet);
+    std::cout << "[DEBUG] Created " << clusters.size() << " clusters." << std::endl;
+
+//    auto clusters = modelClusters; // uncomment for ladt version of the algorithm
 
     Cluster::displayClusters(clusters);
 
@@ -64,10 +66,9 @@ int main() {
     auto end = chrono::steady_clock::now();
 
     // display models
-    validateNBiggestClusters(N_MODELS, clusters);
+//    validateNBiggestClusters(N_MODELS, clusters);
 //    validateBiggestClusters_2(clusters, dataSet.size());
-
-//    validateBiggestClusters(clusters);
+    validateBiggestClusters(clusters);
 
     auto resWindow = Imagine::openWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "results", WINDOW_WIDTH, 10);
     Imagine::setActiveWindow(resWindow);

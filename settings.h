@@ -27,8 +27,8 @@
 
 // adjust these parameters for testing
 #define N_MODELS      5   // nuber of models
-#define N_INLIERS     50 // inliers for 1 model
-#define N_OUTLIERS    50 // in general data set
+#define N_INLIERS     15 // inliers for 1 model
+#define N_OUTLIERS    5 // in general data set
 
 
 
